@@ -11,8 +11,7 @@ export default {
 <style lang="sass" scoped>
 section
   background: $dark-light
-  height: 5rem
+  height: $bottom-size
   width: 100%
-  position: absolute
   bottom: 0
 </style>

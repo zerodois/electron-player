@@ -1,6 +1,8 @@
 'use strict'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import events from './events'
+import fs from 'fs'
+import path from 'path'
 
 /**
  * Set `__static` path to static files in production
@@ -8,6 +10,11 @@ import events from './events'
  */
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+}
+
+let storage = path.resolve('.', 'storage')
+if (!fs.existsSync(storage)) {
+  fs.mkdirSync(storage)
 }
 
 let mainWindow
