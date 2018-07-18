@@ -9,6 +9,14 @@ export const getUrl = () => {
   })
 }
 
+export const store = token => {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('auth:store', token)
+    ipcRenderer.on('auth:store:response', (_, data) => resolve(data))
+    ipcRenderer.on('auth:store:error', (_, err) => reject(err))
+  })
+}
+
 export const auth = (url) => {
   let callbacks = { ok: _ => {}, err: _ => {} }
   let authWindow = new BrowserWindow({

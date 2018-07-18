@@ -8,7 +8,8 @@
 </template>
 
 <script>
-import { getUrl, auth } from '../services/login'
+import { getUrl, auth, store } from '../services/login'
+import { search } from '../services/youtube'
 import { to } from '@/utils'
 
 export default {
@@ -22,8 +23,15 @@ export default {
   methods: {
     popup () {
       auth(this.url)
-        .onSuccess(token => alert(`SUCESSO:\n${token}`))
+        .onSuccess(this.success)
         .onError(_ => alert('DEU BOSTA (SO QUE BOM)'))
+    },
+    async success (token) {
+      let [err] = await to(store(token))
+      if (err) {
+        return console.error(`ERRO NO STORE`, err)
+      }
+      search().then(console.log).catch(console.error)
     }
   },
   async created () {
