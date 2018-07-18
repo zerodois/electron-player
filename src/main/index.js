@@ -34,7 +34,13 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
   for (let ev in events) {
-    ipcMain.on(ev, (_, data) => events[ev](data))
+    ipcMain.on(ev, (e, data) => {
+      console.log(`event`, ev, data)
+      let p = events[ev](data, e.sender)
+      if (p && typeof p.catch === 'function') {
+        p.catch(e => ipcMain.send(`${ev}:error`, e))
+      }
+    })
   }
 
   mainWindow.on('closed', () => {
