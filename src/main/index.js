@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import events from './events'
 import fs from 'fs'
 import path from 'path'
+import './server'
 
 /**
  * Set `__static` path to static files in production

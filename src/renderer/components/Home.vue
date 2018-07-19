@@ -15,7 +15,6 @@
 import Bottom from './Bottom.vue'
 import Sidebar from './Sidebar.vue'
 import Top from './Top.vue'
-import { get } from '@/services/songs'
 
 export default {
   name: 'Home',
@@ -23,9 +22,6 @@ export default {
     Bottom,
     Sidebar,
     Top
-  },
-  created () {
-    get().then(console.log).catch(console.error)
   }
 }
 </script>

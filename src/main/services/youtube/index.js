@@ -16,7 +16,11 @@ export const get = (query) => {
       if (err) {
         return reject(err)
       }
-      console.log('RESPOSTA', JSON.stringify(response.data))
+      response.data.items = response.data.items.map(item => {
+        item.downloaded = false
+        return item
+      })
+      // console.log('RESPOSTA', JSON.stringify(response.data))
       resolve(response.data.items)
     })
   })
