@@ -4,15 +4,13 @@ import { google } from 'googleapis'
 const OAuth2 = google.auth.OAuth2
 
 const SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
-const TOKEN_DIR = `${process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE}/.credentials/`
-const TOKEN_PATH = `${TOKEN_DIR}react-player.json`
 const LOCAL = path.resolve('.', 'client_secret.json')
 
-export let token = JSON.parse(fs.readFileSync(LOCAL, 'utf8'))
+let token = JSON.parse(fs.readFileSync(LOCAL, 'utf8'))
 const clientSecret = token.installed.client_secret
 const clientId = token.installed.client_id
 const redirectUrl = token.installed.redirect_uris[0]
-const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl)
+export const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl)
 
 // const authorize = (callback) => {
 //   fs.readFile(TOKEN_PATH, (err, resp) => {
@@ -25,19 +23,21 @@ const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl)
 // }
 
 export const genAuthUrl = () => {
-  if (!token) {
-    throw new Error('local file not found')
-  }
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES
   })
 }
 
-export const store = resp => {
-  oauth2Client.credentials = resp
-  token = resp
-  return storeToken(token)
+export const decode = code => {
+  return new Promise((resolve, reject) => {
+    oauth2Client.getToken(code, (err, token) => {
+      if (err) {
+        return reject(err)
+      }
+      resolve(token)
+    })
+  })
 }
 
 // function getNewToken (oauth2Client, callback) {
@@ -61,13 +61,6 @@ export const store = resp => {
 //     })
 //   })
 // }
-
-const storeToken = token => {
-  if (!fs.existsSync(TOKEN_DIR)) {
-    fs.mkdirSync(TOKEN_DIR)
-  }
-  fs.writeFileSync(TOKEN_PATH, JSON.stringify(token), 'utf8')
-}
 
 // /**
 //  * Lists the names and IDs of up to 10 files.

@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import { getUrl, auth, store } from '../services/login'
-import { search } from '../services/youtube'
+import { mapActions } from 'vuex'
+import { getUrl, auth, decode } from '../services/login'
 import { to } from '@/utils'
 
 export default {
@@ -21,17 +21,19 @@ export default {
     }
   },
   methods: {
+    ...mapActions('User', ['setToken']),
     popup () {
       auth(this.url)
         .onSuccess(this.success)
         .onError(_ => alert('DEU BOSTA (SO QUE BOM)'))
     },
-    async success (token) {
-      let [err] = await to(store(token))
+    async success (code) {
+      let [err, token] = await to(decode(code))
       if (err) {
         return console.error(`ERRO NO STORE`, err)
       }
-      search().then(console.log).catch(console.error)
+      this.setToken(token)
+      this.$router.replace('/')
     }
   },
   async created () {

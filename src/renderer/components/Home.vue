@@ -4,8 +4,7 @@
       <sidebar />
       <div class="middle">
         <top />
-        <h1>Player daora</h1>
-        <button @click="action">DOWNLOAD</button>
+        <router-view />
       </div>
     </div>
     <bottom />
@@ -13,7 +12,6 @@
 </template>
 
 <script>
-import { download } from '@/services/player'
 import Bottom from './Bottom.vue'
 import Sidebar from './Sidebar.vue'
 import Top from './Top.vue'
@@ -24,13 +22,6 @@ export default {
     Bottom,
     Sidebar,
     Top
-  },
-  methods: {
-    action () {
-      download('https://www.youtube.com/watch?v=Fm5iP0S1z9w')
-        .then(console.log)
-        .catch(console.error)
-    }
   }
 }
 </script>
@@ -46,6 +37,11 @@ export default {
   flex: 1
   display: grid
   grid-template-areas: 'a a'
+  overflow: hidden
   grid-auto-columns: min-content auto
+  grid-auto-rows: 100%
+.middle
+  display: flex
+  flex-direction: column
 </style>
 

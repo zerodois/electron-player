@@ -9,11 +9,11 @@ export const getUrl = () => {
   })
 }
 
-export const store = token => {
+export const decode = token => {
   return new Promise((resolve, reject) => {
-    ipcRenderer.send('auth:store', token)
-    ipcRenderer.on('auth:store:response', (_, data) => resolve(data))
-    ipcRenderer.on('auth:store:error', (_, err) => reject(err))
+    ipcRenderer.send('auth:decode', token)
+    ipcRenderer.on('auth:decode:response', (_, data) => resolve(data))
+    ipcRenderer.on('auth:decode:error', (_, err) => reject(err))
   })
 }
 
@@ -35,7 +35,7 @@ export const auth = (url) => {
     }
     if (/response=code%3D/.test(newUrl)) {
       authWindow.close()
-      let response = /response=code%3D([\d]+)%2([^&]+)/.exec(newUrl)
+      let response = /response=code%3D([\d]+)%2F([^&]+)/.exec(newUrl)
       callbacks.ok(`${response[1]}/${response[2]}`)
     }
   })

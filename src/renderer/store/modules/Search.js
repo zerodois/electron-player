@@ -1,28 +1,29 @@
 import { search } from '../../services/youtube'
 import { to } from '../../utils'
+import store from '../index'
 
 const state = {
-  results: []
+  q: ''
 }
 
 const mutations = {
-  SET_RESULTS: (state, results) => Object.assign(state, { results })
+  SET_SEARCH: (state, payload) => Object.assign(state, payload)
 }
 
 const actions = {
-  search: async ({ commit }, text) => {
-    let q = { text }
-    let [err, results] = await to(search(q))
+  do: async ({ commit }, payload) => {
+    commit('SET_SEARCH', payload)
+    let q = { maxResults: 10, ...payload, token: store.getters['User/getToken'] }
+    let [err, r] = await to(search(q))
     if (err) {
-      results = []
-      console.error(err)
+      return commit('List/SET_LIST', [], { root: true })
     }
-    commit('SET_RESULTS', results)
+    commit('List/SET_LIST', r, { root: true })
   }
 }
 
 const getters = {
-  get: state => state.results
+  get: state => state
 }
 
 export default {

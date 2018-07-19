@@ -1,6 +1,9 @@
-import { genAuthUrl, store } from '../../services/auth'
+import { genAuthUrl, decode } from '../../services/auth'
 
 export default {
   'auth:make': (_, req) => req.send('auth:make:response', genAuthUrl()),
-  'auth:store': (token, req) => req.send('auth:store:response', store(token))
+  'auth:decode': async (code, req) => {
+    let token = await decode(code)
+    req.send('auth:decode:response', token)
+  }
 }

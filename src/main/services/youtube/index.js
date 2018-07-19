@@ -1,28 +1,23 @@
 import { google } from 'googleapis'
-import { token } from '../auth'
+import { oauth2Client } from '../auth'
 
-const OAuth2 = google.auth.OAuth2
-OAuth2.TOKEN = token
-
-export const get = q => {
+export const get = (query) => {
+  oauth2Client.credentials = query.token
   var service = google.youtube('v3')
-  service.channels.list({
-    auth: OAuth2,
-    part: 'snippet,contentDetails,statistics',
-    forUsername: 'GoogleDevelopers'
-  }, (err, response) => {
-    if (err) {
-      console.log('The API returned an error: ' + err)
-      return
-    }
-    var channels = response.data.items
-    if (channels.length === 0) {
-      console.log('No channel found.')
-    } else {
-      console.log('This channel\'s ID is %s. Its title is \'%s\', and it has %s views.',
-        channels[0].id,
-        channels[0].snippet.title,
-        channels[0].statistics.viewCount)
-    }
+  let config = {
+    auth: oauth2Client,
+    part: 'snippet',
+    maxResults: 10,
+    type: ''
+  }
+  Object.assign(config, query)
+  return new Promise((resolve, reject) => {
+    service.search.list(config, (err, response) => {
+      if (err) {
+        return reject(err)
+      }
+      console.log('RESPOSTA', JSON.stringify(response.data))
+      resolve(response.data.items)
+    })
   })
 }

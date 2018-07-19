@@ -8,7 +8,19 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: require('@/components/Home').default
+      component: require('@/components/Home').default,
+      children: [
+        {
+          path: '',
+          name: 'HomePage',
+          component: require('@/components/Home/Index').default
+        },
+        {
+          path: '/search',
+          name: 'Search',
+          component: require('@/components/Home/Search').default
+        }
+      ]
     },
     {
       path: '/login',
@@ -20,13 +32,6 @@ const router = new Router({
       redirect: '/'
     }
   ]
-})
-
-router.beforeEach((to, from, next) => {
-  if (to.name !== 'Login') {
-    return next('/login')
-  }
-  next()
 })
 
 export default router

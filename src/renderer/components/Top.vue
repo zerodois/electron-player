@@ -1,5 +1,5 @@
 <template>
-<section>
+<section class="top">
   <input
     type="text"
     v-model="text"
@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Top',
   data () {
@@ -16,7 +18,11 @@ export default {
     }
   },
   methods: {
-    search (text) {
+    ...mapActions('Search', ['do']),
+    async search (q) {
+      this.do({ q })
+        .then(_ => this.$router.push('/search'))
+        .catch(console.error)
     }
   }
 }
