@@ -2,8 +2,14 @@
   <section class="login">
     <img src="/static/images/logo.svg" alt="Player logo">
     <button
+      class="btn btn--rounded btn--primary--outlined"
       @click="popup"
-      v-if="url">Entrar com a conta Google</button>
+      v-if="url">
+      <font-awesome-icon
+        size="2x"
+        :icon="['fab', 'google']" />
+      Entrar com a conta Google
+    </button>
   </section>
 </template>
 
@@ -54,6 +60,13 @@ export default {
   align-items: center
   justify-content: center
   flex: 1
+  .btn
+    $p: 1.25rem
+    padding-left: $p
+    padding-right: $p
+    svg
+      margin-right: .5rem
   > img
-    width: 10vw
+    width: 15vw
+    margin-bottom: 1rem
 </style>

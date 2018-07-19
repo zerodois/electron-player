@@ -17,6 +17,11 @@ if (!fs.existsSync(storage)) {
   fs.mkdirSync(storage)
 }
 
+let store = path.resolve('.', 'store')
+if (!fs.existsSync(store)) {
+  fs.mkdirSync(store)
+}
+
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -27,9 +32,9 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000
+    height: 768,
+    width: 1366,
+    useContentSize: true
   })
 
   mainWindow.loadURL(winURL)

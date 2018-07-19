@@ -20,8 +20,8 @@ export const decode = token => {
 export const auth = (url) => {
   let callbacks = { ok: _ => {}, err: _ => {} }
   let authWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 650,
+    height: 750,
     show: false,
     'node-integration': false,
     'web-security': false

@@ -4,7 +4,14 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faGoogle)
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
