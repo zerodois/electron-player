@@ -1,12 +1,18 @@
+@import 'fonts'  
+
 /* Colors */
 $black: #191919
 $dark: #1E1E1E
-$dark-light: #2C2C2C
+$dark-light: #757575
 $white: #fefefe
+
 // Themes
-$neutral: #eee
-$primary: #f00
-$secondary: gold
+$neutral: var(--neutral, rgba(0,0,0,.04))
+$neutral-dark: var(--neutral-dark, rgba(0,0,0,.06))
+$primary: var(--primary, #f00)
+$primary-light: var(--primary, #ffd8d8)
+$secondary: var(--secondary, gold)
+$input: var(--input, #F5F5F5)
 
 $colors: (primary: $primary, secondary: $secondary)
 $list: primary secondary
@@ -15,6 +21,10 @@ $list: primary secondary
 $bottom-size: 6rem
 $sidebar-size: 250px
 
-
 /* Fonts */
-$font: 'Roboto', sans-serif;
+$font: 'Roboto', sans-serif
+$logo-font: 'Open Sans', sans-serif
+
+/* Animations */
+$offset: 187
+$duration: 1.4s

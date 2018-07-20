@@ -1,14 +1,20 @@
+// import Vue from 'vue'
+
 const state = {
   list: []
 }
 
 const mutations = {
-  SET_LIST: (state, list) => Object.assign(state, { list })
+  SET_LIST: (state, list) => Object.assign(state, { list }),
+  SET_ITEM: (state, { index, item }) => Object.assign(state.list[index], item)
 }
 
 const actions = {
   setList: async ({ commit }, list) => {
     commit('SET_LIST', list)
+  },
+  setItem: async ({ commit }, payload) => {
+    commit('SET_ITEM', payload)
   }
 }
 

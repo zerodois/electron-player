@@ -3,6 +3,22 @@ body, html
   height: 100%
   padding: 0
   margin: 0
+  font-family: $font
+.no-select
+  user-select: none
+.pointer
+  cursor: pointer
+.default
+  cursor: default
+img
+  max-width: 100%
+a
+  color: $black
+  &, &:hover, &:active, &:focus
+    text-decoration: none
+  &.link
+    &:hover, &:active, &:focus
+      color: $primary
 .btn
   font-family: $font
   background: $neutral
@@ -29,3 +45,36 @@ body, html
         &:hover
           background-color: map-get($colors, $type)
           color: white
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .3s
+.fade-enter, .fade-leave-to
+  opacity: 0
+
+@keyframes rotator
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+
+.path
+  stroke-dasharray: $offset
+  stroke-dashoffset: 0
+  transform-origin: center
+  stroke: #DE3E35
+  stroke-dashoffset: $offset/4
+
+@keyframes colors
+  0%
+    stroke: #4285F4
+  25%
+    stroke: #DE3E35
+  50%
+    stroke: #F7C223
+  75%
+    stroke: #1B9A59
+  100%
+    stroke: #4285F4
+
+.spinner
+  animation: rotator $duration linear infinite

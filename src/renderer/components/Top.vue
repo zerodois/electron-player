@@ -1,9 +1,25 @@
 <template>
 <section class="top">
-  <input
-    type="text"
-    v-model="text"
-    @keypress.enter="search(text)">
+  <div
+    :class="{'active': active}"
+    class="input no-select">
+    <span
+      @click="search(text)"
+      class="material-icons pointer">search</span>
+    <input
+      placeholder="Pesquisar música"
+      type="text"
+      v-model="text"
+      @focus="active = true"
+      @blur="active = false"
+      @keypress.enter="search(text)">
+    <transition name="fade">
+      <span
+        class="material-icons pointer"
+        v-if="text"
+        @click="reset()">close</span>
+    </transition>
+  </div>
 </section>
 </template>
 
@@ -14,12 +30,20 @@ export default {
   name: 'Top',
   data () {
     return {
-      text: ''
+      text: '',
+      active: false
     }
   },
   methods: {
     ...mapActions('Search', ['do']),
+    reset () {
+      this.text = ''
+      // this.$router.push('/')
+    },
     async search (q) {
+      if (!q) {
+        return
+      }
       this.do({ q })
         .then(_ => this.$router.push('/search'))
         .catch(console.error)
@@ -29,4 +53,26 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.input
+  margin: .5rem 0
+  width: 65%
+  display: flex
+  align-items: center
+  transition: all .2s ease-in
+  border: thin solid transparent
+  &.active
+    border-color: rgba(0,0,0,0.12)
+    box-shadow: 0 1px 1px rgba(0,0,0,0.24)
+  &:not(.active)
+    background: $input
+  .material-icons
+    font-size: 1.5rem
+    color: #666
+    padding: .75rem
+  input
+    background: transparent
+    font-size: 1rem
+    flex: 1
+    border: 0
+    outline: none
 </style>

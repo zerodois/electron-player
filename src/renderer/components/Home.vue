@@ -31,8 +31,8 @@ export default {
   flex: 1
   display: flex
   flex-direction: column
-  background: $dark
-  color: $white
+  // background: $dark
+  // color: $white
 .container
   flex: 1
   display: grid
@@ -43,5 +43,6 @@ export default {
 .middle
   display: flex
   flex-direction: column
+  margin-left: 1rem
 </style>
 

@@ -4,6 +4,8 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 const router = new Router({
+  linkActiveClass: 'active',
+  linkExactActiveClass: 'exact-active',
   routes: [
     {
       path: '/',
@@ -14,6 +16,11 @@ const router = new Router({
           path: '',
           name: 'HomePage',
           component: require('@/components/Home/Index').default
+        },
+        {
+          path: '/songs',
+          name: 'Minhas Músicas',
+          component: require('@/components/Home/Songs').default
         },
         {
           path: '/search',
