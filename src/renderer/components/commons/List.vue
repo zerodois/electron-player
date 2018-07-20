@@ -4,15 +4,16 @@
       <tr
         v-for="(item, $index) in list"
         :key="$index"
+        tabindex="0"
+        @blur="selected = null"
         class="list__item no-select"
-        :class="{'active': selected === item}"
+        :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
         @dblclick="action(item, $index)"
         @click="selected = item">
         <td>
           <span
             v-if="item.downloaded !== -1"
             @click="action(item, $index)"
-            :class="{'sm': item.downloaded !== true}"
             class="material-icons play pointer">{{ getIcon(item) }}</span>
           <template v-else>
             <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
@@ -68,6 +69,9 @@ export default {
       this.setItem({ index, item: this.getItem(item, { downloaded }) })
     },
     getIcon (item) {
+      if (this.isActive(item)) {
+        return 'volume_up'
+      }
       if (item.downloaded) {
         return 'play_circle_outline'
       }
@@ -76,6 +80,9 @@ export default {
     getItem (item, rewrite) {
       return { ...item, ...rewrite }
     },
+    isActive (item) {
+      return this.song && item.id.videoId === this.song.id.videoId
+    },
     play (item) {
       EventEmitter.$emit('song:play', item)
     }
@@ -83,6 +90,9 @@ export default {
   computed: {
     ...mapGetters('List', {
       list: 'get'
+    }),
+    ...mapGetters('Player', {
+      song: 'get'
     })
   }
 }
@@ -90,18 +100,19 @@ export default {
 
 <style lang="sass" scoped>
 .list
-  $play: 2rem
+  $play: 1.5rem
   width: 65%
   border-collapse: collapse
   .material-icons.play
     font-size: $play
   &__item
+    outline: none
     &:not(:last-child)
       border-bottom: thin solid $neutral
+    &:not(.active)
+      span.play
+        opacity: .3
     span.play
-      &.sm
-        font-size: 1.5rem
-      opacity: .3
       &:hover
         opacity: .6
         transform: scale(1.05)
@@ -119,6 +130,9 @@ export default {
       //   opacity: 0
     &:hover
       background: $neutral
-    &.active
+    &.selected
       background: $neutral-dark
+    &.active
+      font-weight: 500
+      color: $primary
 </style>

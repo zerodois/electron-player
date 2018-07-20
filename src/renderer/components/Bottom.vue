@@ -11,6 +11,7 @@
 <script>
 import { PORT } from '../../share'
 import { EventEmitter } from '@/utils'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Bottom',
@@ -20,16 +21,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions('Player', ['setSong']),
     play (item) {
       let file = `${item.snippet.title}-${item.id.videoId}.mp3`
         .replace(/["]/g, '\'')
         .replace(/\//g, '_')
         .replace(/\?/g, '')
-      let url = `http://localhost:${PORT}/${file}`
+      let url = `http://localhost:${PORT}/songs/${file}`
       this.source = url
       this.$nextTick(_ => {
         this.$refs.audio.load()
         this.$refs.audio.play()
+        this.setSong(item)
       })
       console.log('TOCASAPORRA', file)
     }

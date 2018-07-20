@@ -16,6 +16,8 @@ if (process.env.NODE_ENV !== 'development') {
 let storage = path.resolve('.', 'storage')
 if (!fs.existsSync(storage)) {
   fs.mkdirSync(storage)
+  fs.mkdirSync(path.resolve('.', 'storage', 'songs'))
+  fs.mkdirSync(path.resolve('.', 'storage', 'meta'))
 }
 
 let store = path.resolve('.', 'store')
