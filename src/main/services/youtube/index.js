@@ -1,7 +1,9 @@
 import { google } from 'googleapis'
 import { oauth2Client } from '../auth'
+import { get as find } from '../../services/songs'
+import { promisify } from 'bluebird-lst'
 
-export const get = (query) => {
+export const get = async (query) => {
   oauth2Client.credentials = query.token
   var service = google.youtube('v3')
   let config = {
@@ -11,17 +13,12 @@ export const get = (query) => {
     type: ''
   }
   Object.assign(config, query)
-  return new Promise((resolve, reject) => {
-    service.search.list(config, (err, response) => {
-      if (err) {
-        return reject(err)
-      }
-      response.data.items = response.data.items.map(item => {
-        item.downloaded = false
-        return item
-      })
-      // console.log('RESPOSTA', JSON.stringify(response.data))
-      resolve(response.data.items)
-    })
+  let fn = promisify(service.search.list).bind(service)
+  let response = await fn(config)
+  let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
+  response.data.items = response.data.items.map(item => {
+    item.downloaded = songs.indexOf(item.id.videoId) > -1
+    return item
   })
+  return response.data.items
 }
