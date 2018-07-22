@@ -1,5 +1,13 @@
 <template>
   <table class="list">
+    <thead>
+      <tr class="list__item">
+        <td class="min"></td>
+        <td class="min"></td>
+        <td class="">Título</td>
+        <td class="">Canal</td>
+      </tr>
+    </thead>
     <tbody>
       <tr
         v-for="(item, $index) in list"
@@ -10,11 +18,18 @@
         :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
         @dblclick="action(item, $index)"
         @click="selected = item">
-        <td>
+        <td class="min text-end">
+          <span
+            @click="action(item, $index)"
+            class="material-icons icon play pointer">{{ getIcon(item) }}</span>
+          <!-- <button >Executar</button> -->
+        </td>
+        <td class="min">
           <span
             v-if="item.downloaded !== -1"
-            @click="action(item, $index)"
-            class="material-icons play pointer">{{ getIcon(item) }}</span>
+            @click="download(item, $index)"
+            :class="{'downloaded': item.downloaded}"
+            class="material-icons icon down pointer">arrow_downward</span>
           <template v-else>
             <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
               <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
@@ -24,6 +39,10 @@
         </td>
         <td class="default">
           {{ item.snippet.title }}
+        </td>
+        <td
+          class="default last">
+          {{ item.snippet.channelTitle }}
         </td>
         <!-- <td>
           <button
@@ -53,12 +72,16 @@ export default {
       if (item.downloaded === -1) {
         return
       }
-      if (item.downloaded) {
-        return this.play(item)
-      }
-      this.download(item, index)
+      return this.play(item)
+      // if (item.downloaded) {
+      //   return this.play(item)
+      // }
+      // this.download(item, index)
     },
     async download (item, index) {
+      if (item.downloaded) {
+        return
+      }
       this.setItem({ index, item: this.getItem(item, { downloaded: -1 }) })
       let [err] = await to(download(item))
       let downloaded = true
@@ -75,13 +98,14 @@ export default {
       if (item.downloaded) {
         return 'play_circle_outline'
       }
-      return 'arrow_downward'
+      return 'play_circle_outline'
+      // return 'arrow_downward'
     },
     getItem (item, rewrite) {
       return { ...item, ...rewrite }
     },
     isActive (item) {
-      return this.song && item.id.videoId === this.song.id.videoId
+      return this.running && this.song && item.id.videoId === this.song.id.videoId
     },
     play (item) {
       EventEmitter.$emit('song:play', item)
@@ -92,7 +116,8 @@ export default {
       list: 'get'
     }),
     ...mapGetters('Player', {
-      song: 'get'
+      song: 'get',
+      running: 'getRunning'
     })
   }
 }
@@ -101,37 +126,57 @@ export default {
 <style lang="sass" scoped>
 .list
   $play: 1.5rem
-  width: 65%
+  $down: 1.25rem
+  width: 85%
   border-collapse: collapse
-  .material-icons.play
+  .last
+    max-width: 10rem
+    white-space: nowrap
+    text-overflow: ellipsis
+    overflow: hidden
+  .material-icons.icon
     font-size: $play
+    &.down
+      font-size: $down
+      &.downloaded
+        font-size: 1rem
+        border-radius: 50%
+        padding: .15rem
+        background: $primary
+        color: white
+  thead
+    .list__item
+      font-weight: 500
+      border-bottom: thin solid #ddd
+  > *:not(thead)
+    .list__item
+      &:hover
+        background: $neutral
+      &.selected
+        background: $neutral-dark
+
   &__item
     outline: none
     &:not(:last-child)
       border-bottom: thin solid $neutral
     &:not(.active)
-      span.play
+      span.icon:not(.downloaded)
         opacity: .3
-    span.play
-      &:hover
-        opacity: .6
-        transform: scale(1.05)
-    &, span.play
+        &:hover
+          opacity: .6
+          transform: scale(1.05)
+    &, span.icon
       transition: all .2s ease-in
     td
       padding: .5rem 0
       > *
         vertical-align: middle
-    td:first-child
+    td.min
       padding-left: .25rem
       width: calc(#{$play} + .5rem)
-    // &:not(:hover)
-      // .play
-      //   opacity: 0
-    &:hover
-      background: $neutral
-    &.selected
-      background: $neutral-dark
+    &:not(:hover):not(.active):not(.downloaded)
+      .play
+        opacity: 0
     &.active
       font-weight: 500
       color: $primary
