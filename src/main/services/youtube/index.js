@@ -10,7 +10,7 @@ export const get = async (query) => {
     auth: oauth2Client,
     part: 'snippet',
     maxResults: 10,
-    type: ''
+    type: 'video'
   }
   Object.assign(config, query)
   let fn = promisify(service.search.list).bind(service)
@@ -20,5 +20,5 @@ export const get = async (query) => {
     item.downloaded = songs.indexOf(item.id.videoId) > -1
     return item
   })
-  return response.data.items
+  return response.data
 }

@@ -21,10 +21,22 @@
         </router-link>
       </div>
     </nav>
+    <div class="bottom">
+      <div class="img">
+        <img
+          v-if="image"
+          :src="image"
+          alt="">
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { PORT } from '../../share'
+import mixin from '@/mixins'
+
 const routes = [
   { title: 'Navegar', path: '/', icon: 'home' },
   { title: 'Minhas músicas', path: '/songs', icon: 'music_note' }
@@ -32,9 +44,24 @@ const routes = [
 
 export default {
   name: 'Sidebar',
+  mixins: [mixin],
   data () {
     return {
       routes
+    }
+  },
+  computed: {
+    ...mapGetters('Player', {
+      song: 'get'
+    }),
+    image () {
+      if (!this.song) {
+        return null
+      }
+      if (!this.song.downloaded) {
+        return this.song.snippet.thumbnails.medium.url
+      }
+      return `http://localhost:${PORT}/meta/${this.file(this.song, 'jpg')}`
     }
   }
 }
@@ -67,6 +94,19 @@ export default {
 .sidebar
   height: 100%
   width: $sidebar-size
+  display: flex
+  flex-direction: column
+  .bottom
+    flex: 1
+    display: flex
+    justify-content: center
+    align-items: flex-end
+    .img
+      height: $sidebar-size
+      background: gold
+      img
+        object-fit: cover
+        height: 100%
   .logo
     display: flex
     justify-content: flex-start

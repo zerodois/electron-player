@@ -1,5 +1,44 @@
 <template>
   <section>
+    <div class="left">
+      <template v-if="song">
+        <span class="title">{{ song.snippet.title }}</span>
+        <span>{{ song.snippet.channelTitle }}</span>
+      </template>
+    </div>
+    <div class="center">
+      <div class="controls no-select">
+        <span
+          @click="setShuffle(!shuffle)"
+          :class="{'active': shuffle}"
+          class="pointer material-icons">shuffle</span>
+        <span
+          @click="prev()"
+          class="pointer material-icons">skip_previous</span>
+        <span
+          @click="action()"
+          class="pointer material-icons">{{ running ? 'pause' : 'play_arrow' }}</span>
+        <span
+          @click="next()"
+          class="pointer material-icons">skip_next</span>
+        <span
+          @click="setRepeat((repeat + 1) % 3)"
+          :class="{'active': repeat}"
+          class="pointer material-icons">{{ repeat === 2 ? 'repeat_one' : 'repeat' }}</span>
+      </div>
+      <div
+        @click="seek"
+        class="container pointer">
+        <span>{{ format(time) }}</span>
+        <div class="progress">
+          <div
+            class="bar"
+            :style="`width: ${percent}%;`"></div>
+        </div>
+        <span>{{ format(duration) }}</span>
+      </div>
+    </div>
+    <div class="right"></div>
     <audio
       @durationchange="ev => duration = ev.target.duration"
       @timeupdate="ev => time = ev.target.currentTime"
@@ -9,36 +48,6 @@
         :src="source"
         type="audio/mpeg">
     </audio>
-    <div class="controls no-select">
-      <span
-        @click="setShuffle(!shuffle)"
-        :class="{'active': shuffle}"
-        class="pointer material-icons">shuffle</span>
-      <span
-        @click="prev()"
-        class="pointer material-icons">skip_previous</span>
-      <span
-        @click="action()"
-        class="pointer material-icons">{{ running ? 'pause' : 'play_arrow' }}</span>
-      <span
-        @click="next()"
-        class="pointer material-icons">skip_next</span>
-      <span
-        @click="setRepeat((repeat + 1) % 3)"
-        :class="{'active': repeat}"
-        class="pointer material-icons">{{ repeat === 2 ? 'repeat_one' : 'repeat' }}</span>
-    </div>
-    <div
-      @click="seek"
-      class="container pointer">
-      <span>{{ format(time) }}</span>
-      <div class="progress">
-        <div
-          class="bar"
-          :style="`width: ${percent}%;`"></div>
-      </div>
-      <span>{{ format(duration) }}</span>
-    </div>
   </section>
 </template>
 
@@ -46,9 +55,12 @@
 import { PORT } from '../../share'
 import { EventEmitter } from '@/utils'
 import { mapActions, mapGetters } from 'vuex'
+import { ipcRenderer } from 'electron'
+import mixin from '@/mixins'
 
 export default {
   name: 'Bottom',
+  mixins: [mixin],
   data () {
     return {
       source: null,
@@ -66,10 +78,7 @@ export default {
     ]),
     getUrl (item) {
       if (item.downloaded) {
-        let file = `${item.snippet.title}-${item.id.videoId}.mp3`
-          .replace(/["]/g, '\'')
-          .replace(/\//g, '_')
-          .replace(/\?/g, '')
+        let file = this.file(item)
         return `http://localhost:${PORT}/songs/${file}`
       }
       return `http://localhost:${PORT}/stream/${item.id.videoId}`
@@ -151,6 +160,9 @@ export default {
   },
   created () {
     EventEmitter.$on('song:play', this.play)
+    ipcRenderer.on('keyboard:next', _ => this.next())
+    ipcRenderer.on('keyboard:prev', _ => this.prev())
+    ipcRenderer.on('keyboard:playpause', _ => this.action())
   },
   destroyed () {
     this.setRunning(false)
@@ -214,11 +226,23 @@ audio
     &:nth-child(3)
       font-size: 2.5rem
 section
-  height: $bottom-size
-  width: 100%
-  bottom: 0
-  display: flex
-  flex-direction: column
-  justify-content: center
-  align-items: center
+  display: grid
+  grid-template-columns: 3fr 10fr 3fr
+  .left
+    display: flex
+    flex-direction: column
+    padding: 0 1rem
+    justify-content: center
+    font-size: .85rem
+    .title
+      font-size: 1rem
+      font-weight: 500
+  .center
+    height: $bottom-size
+    width: 100%
+    bottom: 0
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
 </style>

@@ -6,6 +6,7 @@ const state = {
 
 const mutations = {
   SET_LIST: (state, list) => Object.assign(state, { list }),
+  MERGE_LIST: (state, list) => Object.assign(state, { list: [...state.list, ...list] }),
   SET_ITEM: (state, { index, item }) => Object.assign(state.list[index], item)
 }
 

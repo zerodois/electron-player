@@ -90,6 +90,7 @@ export default {
         console.error(err)
       }
       this.setItem({ index, item: this.getItem(item, { downloaded }) })
+      // download(item)
     },
     getIcon (item) {
       if (this.isActive(item)) {
@@ -169,6 +170,8 @@ export default {
       transition: all .2s ease-in
     td
       padding: .5rem 0
+      &:last-child
+        padding-right: .5rem
       > *
         vertical-align: middle
     td.min

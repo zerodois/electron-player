@@ -1,5 +1,5 @@
 'use strict'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import events from './events'
 import fs from 'fs'
 import path from 'path'
@@ -46,10 +46,14 @@ function createWindow () {
       console.log(`event`, ev, data)
       let p = events[ev](data, e.sender)
       if (p && typeof p.catch === 'function') {
-        p.catch(e => ipcMain.send(`${ev}:error`, e))
+        p.catch(e => e.sender.send(`${ev}:error`, e))
       }
     })
   }
+
+  globalShortcut.register('MediaNextTrack', _ => mainWindow.webContents.send('keyboard:next'))
+  globalShortcut.register('MediaNextTrack', _ => mainWindow.webContents.send('keyboard:prev'))
+  globalShortcut.register('MediaPlayPause', _ => mainWindow.webContents.send('keyboard:playpause'))
 
   mainWindow.on('closed', () => {
     mainWindow = null
