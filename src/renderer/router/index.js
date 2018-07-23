@@ -23,6 +23,11 @@ const router = new Router({
           component: require('@/components/Home/Songs').default
         },
         {
+          path: '/playlists',
+          name: 'Playlists',
+          component: require('@/components/Home/Playlists').default
+        },
+        {
           path: '/search',
           name: 'Search',
           component: require('@/components/Home/Search').default

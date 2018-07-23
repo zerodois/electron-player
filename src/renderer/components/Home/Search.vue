@@ -1,11 +1,14 @@
 <template>
   <section class="search">
     <list-component />
-    <button
-      @click="nextPage()"
-      v-if="search.nextPage">
-      CARREGAR MAIS
-    </button>
+    <div class="text-center more">
+      <button
+        class="btn btn--primary--flat"
+        @click="nextPage()"
+        v-if="search.nextPage">
+        CARREGAR MAIS
+      </button>
+    </div>
   </section>
 </template>
 
@@ -31,7 +34,8 @@ export default {
 
 <style lang="sass" scoped>
 .search
-  padding-top: 2rem
   flex: 1
   overflow: auto
+  .more
+    margin-top: 2rem
 </style>

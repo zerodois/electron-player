@@ -128,6 +128,7 @@ export default {
 .list
   $play: 1.5rem
   $down: 1.25rem
+  margin-top: 2rem
   width: 85%
   border-collapse: collapse
   .last

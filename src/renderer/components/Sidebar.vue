@@ -39,7 +39,8 @@ import mixin from '@/mixins'
 
 const routes = [
   { title: 'Navegar', path: '/', icon: 'home' },
-  { title: 'Minhas músicas', path: '/songs', icon: 'music_note' }
+  { title: 'Minhas músicas', path: '/songs', icon: 'music_note' },
+  { title: 'Playlists', path: '/playlists', icon: 'playlist_play' }
 ]
 
 export default {
@@ -58,7 +59,7 @@ export default {
       if (!this.song) {
         return null
       }
-      if (!this.song.downloaded) {
+      if (!this.song.downloaded || this.song.downloaded === -1) {
         return this.song.snippet.thumbnails.medium.url
       }
       return `http://localhost:${PORT}/meta/${this.file(this.song, 'jpg')}`
@@ -80,9 +81,9 @@ export default {
     font-weight: 500
     padding: .75rem 0
     font-size: 13px
-    &:hover
+    &:hover, &:focus
       background: $neutral
-    &.active, &:active, &:focus
+    &.active, &:active
       font-weight: 600
       color: $primary
       background: $primary-light

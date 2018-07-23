@@ -1,6 +1,5 @@
 <template>
   <section>
-    <h1>Minhas musicas</h1>
     <list-component />
   </section>
 </template>

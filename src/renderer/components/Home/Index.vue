@@ -1,5 +1,9 @@
 <template>
-  <section>Navegando</section>
+  <section>
+    <h1>
+      Navegando
+    </h1>
+  </section>
 </template>
 
 <script>

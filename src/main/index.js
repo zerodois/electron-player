@@ -39,6 +39,7 @@ function createWindow () {
     width: 1366,
     useContentSize: true
   })
+  mainWindow.setMenu(null)
 
   mainWindow.loadURL(winURL)
   for (let ev in events) {
