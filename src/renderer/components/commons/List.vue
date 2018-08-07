@@ -4,8 +4,9 @@
       <tr class="list__item">
         <td class="min"></td>
         <td class="min"></td>
-        <td class="">Título</td>
-        <td class="">Canal</td>
+        <td
+          v-for="(field, $index) in fields"
+          :key="$index">{{ field.title }}</td>
       </tr>
     </thead>
     <tbody>
@@ -37,12 +38,12 @@
           </template>
           <!-- <button >Executar</button> -->
         </td>
-        <td class="default">
-          {{ item.snippet.title }}
-        </td>
         <td
-          class="default last">
-          {{ item.snippet.channelTitle }}
+          v-for="(field, $index) in fields"
+          :key="$index"
+          :class="{'last': $index === fields.length - 1}"
+          class="default">
+          {{ evaluate(item, field) }}
         </td>
         <!-- <td>
           <button
@@ -61,6 +62,16 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'List',
+  props: {
+    fields: {
+      type: Array,
+      default: _ => [
+        { title: 'Titulo', key: 'snippet.title' },
+        { title: 'Canal', key: 'snippet.channelTitle' }
+      ]
+    },
+    events: Boolean
+  },
   data () {
     return {
       selected: null
@@ -68,7 +79,19 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setItem']),
+    evaluate (item, field) {
+      if (typeof field.value === 'function') {
+        return field.value(item)
+      }
+      if (!field.key) {
+        return ''
+      }
+      return field.key.split('.').reduce((p, c) => p[c], item)
+    },
     action (item, index) {
+      if (this.events) {
+        return this.$emit('play', { item, index })
+      }
       if (item.downloaded === -1) {
         return
       }
@@ -79,6 +102,9 @@ export default {
       // this.download(item, index)
     },
     async download (item, index) {
+      if (this.events) {
+        return this.$emit('download', { item, index })
+      }
       if (item.downloaded) {
         return
       }

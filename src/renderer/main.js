@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
+import VueSnackbar from 'vue-snack'
+import 'vue-snack/dist/vue-snack.min.css'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -17,6 +19,9 @@ for (let fa in fas) {
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
+Vue.use(VueSnackbar, {
+  close: true
+})
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false

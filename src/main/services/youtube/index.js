@@ -22,3 +22,23 @@ export const get = async (query) => {
   })
   return response.data
 }
+
+export const playlists = async (q) => {
+  oauth2Client.credentials = q.token
+  var service = google.youtube('v3')
+  let config = {
+    auth: oauth2Client,
+    part: 'snippet,status',
+    maxResults: 10,
+    mine: true
+  }
+  let fn = promisify(service.playlists.list).bind(service)
+  let response = await fn({ ...config, ...q })
+  return response.data
+  // let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
+  // response.data.items = response.data.items.map(item => {
+  //   item.downloaded = songs.indexOf(item.id.videoId) > -1
+  //   return item
+  // })
+  // return response.data
+}

@@ -28,6 +28,11 @@ const router = new Router({
           component: require('@/components/Home/Playlists').default
         },
         {
+          path: '/playlists/:id',
+          name: 'Detalhes Playlist',
+          component: require('@/components/Home/Playlists/Index').default
+        },
+        {
           path: '/search',
           name: 'Search',
           component: require('@/components/Home/Search').default

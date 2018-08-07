@@ -1,5 +1,9 @@
 <template>
 <section class="top">
+  <div class="no-select">
+    <span @click="$router.go(-1)" class="material-icons pointer">chevron_left</span>
+    <span @click="$router.go(1)" class="material-icons pointer">chevron_right</span>
+  </div>
   <div
     :class="{'active': active}"
     class="input no-select">
@@ -48,11 +52,17 @@ export default {
         .then(_ => this.$router.push('/search'))
         .catch(console.error)
     }
+  },
+  created () {
+    console.log('CPAORASR', this.$router)
   }
 }
 </script>
 
 <style lang="sass" scoped>
+.top
+  display: flex
+  align-items: center
 .input
   margin: .5rem 0
   width: 65%

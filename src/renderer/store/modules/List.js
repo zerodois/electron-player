@@ -14,6 +14,9 @@ const actions = {
   setList: async ({ commit }, list) => {
     commit('SET_LIST', list)
   },
+  mergeList: async ({ commit }, list) => {
+    commit('MERGE_LIST', list)
+  },
   setItem: async ({ commit }, payload) => {
     commit('SET_ITEM', payload)
   }
