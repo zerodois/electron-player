@@ -7,7 +7,7 @@
       </section>
       <div class="content">
         <span>PLAYLIST</span>
-        <span class="title">{{ playlist.snippet.title }}</span>
+        <span class="title title--main">{{ playlist.snippet.title }}</span>
         <small>Criada por <span class="text--primary">{{ playlist.snippet.channelTitle }}</span></small>
         <div>
           <button class="btn btn--primary--flat">EXECUTAR</button>
@@ -15,6 +15,7 @@
       </div>
     </header>
     <list
+      :list="list"
       v-if="!loading"/>
   </template>
 </section>
@@ -41,16 +42,28 @@ export default {
   },
   computed: {
     ...mapGetters('Playlist', {
-      playlist: 'get'
-    })
+      playlists: 'get'
+    }),
+    ...mapGetters('List', {
+      list: 'get'
+    }),
+    playlist () {
+      return this.playlists.find(it => it.id === this.$route.params.id)
+    }
   },
   async created () {
-    let [err, data] = await to(playlistItems({ playlistId: this.$route.params.id }))
+    let [err, data] = await to(playlistItems({
+      playlistId: this.$route.params.id,
+      part: 'snippet,id,contentDetails'
+    }))
     if (err) {
       console.error(err)
       return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
     }
-    this.setList(data.items)
+    this.setList(data.items.map(it => {
+      it.id = { videoId: it.contentDetails.videoId }
+      return it
+    }))
     this.loading = false
   }
 }
@@ -69,9 +82,6 @@ header
     flex-direction: column
     justify-content: center
     padding: 1rem
-    .title
-      font-weight: bold
-      font-size: 3.5rem
   .cover
     img
       box-shadow: 0 0 10px 0 #ccc

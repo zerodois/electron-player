@@ -2,6 +2,7 @@
   <section>
     <list
       @play="redirect"
+      :list="playlists"
       :events="true"
       :fields="fields" />
     <div class="text-center">
@@ -16,10 +17,8 @@
 </template>
 
 <script>
-import { playlists } from '../../services/youtube'
-import { to } from '../../utils'
 import List from '@/components/commons/List'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 
 export default {
@@ -38,33 +37,15 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setList', 'mergeList']),
-    ...mapActions('Playlist', ['setPlaylist']),
-    async load (append = false) {
-      if (!append) {
-        this.setList([])
-      }
-      let [err, res] = await to(playlists({ pageToken: this.nextPage, mine: true }))
-      if (err) {
-        console.error(err)
-        return this.$snack.danger({
-          text: 'Erro ao carregar playlists',
-          button: 'tentar de novo',
-          action: this.load
-        })
-      }
-      this.nextPage = res.nextPageToken
-      if (append) {
-        return this.mergeList(res.items)
-      }
-      this.setList(res.items)
-    },
+    ...mapActions('Playlist', ['setPlaylists']),
     redirect ({ item }) {
-      this.setPlaylist(item)
       this.$router.push(`/playlists/${item.id}`)
     }
   },
-  async created () {
-    this.load()
+  computed: {
+    ...mapGetters('Playlist', {
+      playlists: 'get'
+    })
   }
 }
 </script>

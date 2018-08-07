@@ -63,6 +63,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'List',
   props: {
+    list: Array,
     fields: {
       type: Array,
       default: _ => [
@@ -139,9 +140,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('List', {
-      list: 'get'
-    }),
     ...mapGetters('Player', {
       song: 'get',
       running: 'getRunning'
@@ -155,6 +153,8 @@ export default {
   $play: 1.5rem
   $down: 1.25rem
   margin-top: 2rem
+  &--no-top
+    margin-top: .5rem
   width: 85%
   border-collapse: collapse
   .last

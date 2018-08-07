@@ -1,6 +1,7 @@
 <template>
   <section class="search">
-    <list-component />
+    <list-component
+      :list="list" />
     <div class="text-center more">
       <button
         class="btn btn--primary--flat"
@@ -25,6 +26,9 @@ export default {
     ...mapActions('Search', ['nextPage'])
   },
   computed: {
+    ...mapGetters('List', {
+      list: 'get'
+    }),
     ...mapGetters('Search', {
       search: 'get'
     })
