@@ -38,11 +38,12 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setList', 'mergeList']),
+    ...mapActions('Playlist', ['setPlaylist']),
     async load (append = false) {
       if (!append) {
         this.setList([])
       }
-      let [err, res] = await to(playlists({ pageToken: this.nextPage }))
+      let [err, res] = await to(playlists({ pageToken: this.nextPage, mine: true }))
       if (err) {
         console.error(err)
         return this.$snack.danger({
@@ -58,6 +59,7 @@ export default {
       this.setList(res.items)
     },
     redirect ({ item }) {
+      this.setPlaylist(item)
       this.$router.push(`/playlists/${item.id}`)
     }
   },

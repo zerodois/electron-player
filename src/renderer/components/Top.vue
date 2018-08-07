@@ -63,6 +63,7 @@ export default {
 .top
   display: flex
   align-items: center
+  min-height: 75px
 .input
   margin: .5rem 0
   width: 65%

@@ -20,6 +20,9 @@ a
     &:hover, &:active, &:focus
       color: $primary
 .text
+  @each $type in $list
+    &--#{$type}
+      color: map-get($colors, $type)
   &-end
     text-align: end
   &-center

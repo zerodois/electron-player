@@ -16,3 +16,11 @@ export const playlists = (q) => {
     ipcRenderer.on('youtube:playlists:error', (_, err) => reject(err))
   })
 }
+
+export const playlistItems = (q) => {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('youtube:playlist:items', { token: store.getters['User/getToken'], ...q })
+    ipcRenderer.on('youtube:playlist:items:response', (_, data) => resolve(data))
+    ipcRenderer.on('youtube:playlist:items:error', (_, err) => reject(err))
+  })
+}

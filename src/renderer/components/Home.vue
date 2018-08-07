@@ -4,7 +4,9 @@
       <sidebar />
       <div class="middle">
         <top />
-        <router-view />
+        <div class="scroll">
+          <router-view />
+        </div>
       </div>
     </div>
     <bottom />
@@ -44,5 +46,7 @@ export default {
   display: flex
   flex-direction: column
   margin-left: 1rem
+.scroll
+  overflow: auto
 </style>
 
