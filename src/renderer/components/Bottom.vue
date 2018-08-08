@@ -77,7 +77,7 @@ export default {
       'setShuffle'
     ]),
     getUrl (item) {
-      if (item.downloaded) {
+      if (item.downloaded > 0) {
         let file = this.file(item)
         return `http://localhost:${PORT}/songs/${file}`
       }
