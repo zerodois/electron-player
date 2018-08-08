@@ -27,10 +27,13 @@
         </td>
         <td class="min">
           <span
-            v-if="item.downloaded !== -1"
+            v-if="item.downloaded >= 0"
             @click="download(item, $index)"
             :class="{'downloaded': item.downloaded}"
             class="material-icons icon down pointer">arrow_downward</span>
+          <span
+            v-else-if="item.downloaded === -2"
+            class="material-icons icon down pointer">hourglass_empty</span>
           <template v-else>
             <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
               <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
@@ -103,17 +106,11 @@ export default {
       // this.download(item, index)
     },
     async download (item, index) {
-      if (this.events) {
-        return this.$emit('download', { item, index })
-      }
-      if (item.downloaded) {
-        return
-      }
       this.setItem({ index, item: this.getItem(item, { downloaded: -1 }) })
       let [err] = await to(download(item))
-      let downloaded = true
+      let downloaded = 1
       if (err) {
-        downloaded = false
+        downloaded = 0
         console.error(err)
       }
       this.setItem({ index, item: this.getItem(item, { downloaded }) })

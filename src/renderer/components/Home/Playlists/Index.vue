@@ -14,6 +14,18 @@
         </div>
       </div>
     </header>
+    <div class="action-bar">
+      <div class="search"></div>
+      <small>Baixar playlist</small>
+      <div class="right">
+        <div
+          :class="{'active': download}"
+          @click="doDownload()"
+          class="toggler toggler--primary">
+          <span></span>
+        </div>
+      </div>
+    </div>
     <list
       :list="list"
       v-if="!loading"/>
@@ -37,26 +49,47 @@ export default {
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      download: false
     }
   },
   methods: {
     ...mapActions('List', ['setList']),
-    async load () {
-      this.loading = true
-      let [err, data] = await to(playlistItems({
+    ...mapActions('Playlist', ['updateList']),
+    async request () {
+      if (this.playlist.videos) {
+        return this.playlist.videos
+      }
+      let data = await playlistItems({
         playlistId: this.$route.params.id,
         part: 'snippet,id,contentDetails'
-      }))
+      })
+      let arr = data.items.map(it => {
+        it.id = { videoId: it.contentDetails.videoId }
+        return it
+      })
+      this.updateList({ ...this.playlist, videos: arr })
+      return arr
+    },
+    doDownload () {
+      this.download = !this.download
+      this.updateList({
+        ...this.playlist,
+        videos: this.playlist.videos.map(v => {
+          return { ...v, downloaded: v.downloaded > 0 ? 1 : (this.download ? -2 : 0) }
+        })
+      })
+      this.setList(this.playlist.videos)
+    },
+    async load () {
+      this.loading = true
+      let [err, data] = await to(this.request())
+      this.loading = false
       if (err) {
         console.error(err)
         return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
       }
-      this.setList(data.items.map(it => {
-        it.id = { videoId: it.contentDetails.videoId }
-        return it
-      }))
-      this.loading = false
+      this.setList(data)
     }
   },
   computed: {
@@ -77,6 +110,15 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.action-bar
+  display: flex
+  padding: .5rem 1rem
+  align-items: center
+  .search
+    flex: 1
+  .right
+    margin: 0 1rem
+    width: 2rem
 header
   margin: 2rem 0 0 0
   display: flex

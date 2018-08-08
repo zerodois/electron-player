@@ -17,7 +17,7 @@ export const get = async (query) => {
   let response = await fn(config)
   let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
   response.data.items = response.data.items.map(item => {
-    item.downloaded = songs.indexOf(item.id.videoId) > -1
+    item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0
     return item
   })
   return response.data
@@ -46,5 +46,10 @@ export const playlistItems = async (q) => {
   }
   let fn = promisify(service.playlistItems.list).bind(service)
   let response = await fn({ ...config, ...q })
+  let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
+  response.data.items = response.data.items.map(item => {
+    item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0
+    return item
+  })
   return response.data
 }
