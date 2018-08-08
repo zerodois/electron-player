@@ -32,13 +32,32 @@ export default {
   components: {
     List
   },
+  watch: {
+    '$route.params.id': 'load'
+  },
   data () {
     return {
       loading: true
     }
   },
   methods: {
-    ...mapActions('List', ['setList'])
+    ...mapActions('List', ['setList']),
+    async load () {
+      this.loading = true
+      let [err, data] = await to(playlistItems({
+        playlistId: this.$route.params.id,
+        part: 'snippet,id,contentDetails'
+      }))
+      if (err) {
+        console.error(err)
+        return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
+      }
+      this.setList(data.items.map(it => {
+        it.id = { videoId: it.contentDetails.videoId }
+        return it
+      }))
+      this.loading = false
+    }
   },
   computed: {
     ...mapGetters('Playlist', {
@@ -52,19 +71,7 @@ export default {
     }
   },
   async created () {
-    let [err, data] = await to(playlistItems({
-      playlistId: this.$route.params.id,
-      part: 'snippet,id,contentDetails'
-    }))
-    if (err) {
-      console.error(err)
-      return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
-    }
-    this.setList(data.items.map(it => {
-      it.id = { videoId: it.contentDetails.videoId }
-      return it
-    }))
-    this.loading = false
+    this.load()
   }
 }
 </script>

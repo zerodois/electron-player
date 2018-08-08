@@ -95,3 +95,22 @@ a
 .title.title--main
   font-weight: bold
   font-size: 3.5rem
+
+.scroll
+  overflow: auto
+  &::-webkit-scrollbar
+    width: 10px
+  &::-webkit-scrollbar-track
+    background: transparent
+    &:hover
+      background: #eee
+  &::-webkit-scrollbar-thumb
+    background: #ccc
+    &:hover
+      background: #aaa
+
+.dropdown
+  &-enter-active, &-leave-active
+    transition: transform .5s
+  &-enter, &-leave-to
+    transform: translateY(-100%)

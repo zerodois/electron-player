@@ -75,7 +75,5 @@ export default {
   display: flex
   flex-direction: column
   margin-left: 1rem
-.scroll
-  overflow: auto
 </style>
 

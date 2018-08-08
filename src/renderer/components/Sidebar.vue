@@ -4,21 +4,69 @@
       <img src="/static/images/logo.svg" alt="">
       <span>Quark</span>
     </div>
-    <nav>
+    <nav class="scroll">
       <div
         v-for="(route, $index) in routes"
         :key="$index"
         class="link">
         <router-link
+          v-if="!isArray(route)"
+          class="item"
           exact
           :to="route.path">
-          <span class="material-icons">
-            {{ route.icon }}
-          </span>
+          <div class="icons">
+            <span class="material-icons">
+              {{ isArray(route) ? 'arrow_drop_down' : '' }}
+            </span>
+            <span class="material-icons">
+              {{ route.icon }}
+            </span>
+          </div>
           <span>
             {{ route.title }}
           </span>
         </router-link>
+        <template v-else>
+          <div
+            class="item"
+            :class="{'active': route.active}"
+            @click="route.active = !route.active">
+            <div class="icons">
+              <span class="material-icons arrow">
+                {{ isArray(route) ? 'arrow_drop_down' : '' }}
+              </span>
+              <span class="material-icons">
+                {{ route.icon }}
+              </span>
+            </div>
+            <span>
+              {{ route.title }}
+            </span>
+          </div>
+          <div class="dropdown-container">
+            <transition name="dropdown">
+              <div
+                v-if="route.active"
+                class="dropdown">
+                <div class="items">
+                  <router-link
+                    v-for="(subroute, $index) in getArray(route)"
+                    :key="$index"
+                    :to="subroute.path"
+                    class="item">
+                    <div class="icons">
+                      <span class="material-icons"></span>
+                      <span class="subroute material-icons">{{ subroute.icon }}</span>
+                    </div>
+                    <span>
+                      {{ subroute.title }}
+                    </span>
+                  </router-link>
+                </div>
+              </div>
+            </transition>
+          </div>
+        </template>
       </div>
     </nav>
     <div class="bottom">
@@ -40,7 +88,7 @@ import mixin from '@/mixins'
 const routes = [
   { title: 'Navegar', path: '/', icon: 'home' },
   { title: 'Minhas músicas', path: '/songs', icon: 'music_note' },
-  { title: 'Playlists', path: '/playlists', icon: 'playlist_play' }
+  { title: 'Playlists', path: '/playlists', icon: 'playlist_play', items: 'playlists' }
 ]
 
 export default {
@@ -48,13 +96,39 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      routes
+      routes: routes.map(it => {
+        it.active = false
+        return it
+      })
+    }
+  },
+  methods: {
+    isArray (route) {
+      return route.items
+    },
+    getArray (route) {
+      if (Array.isArray(route.items)) {
+        return route.items
+      }
+      return this[route.items]
     }
   },
   computed: {
     ...mapGetters('Player', {
       song: 'get'
     }),
+    ...mapGetters('Playlist', {
+      lists: 'get'
+    }),
+    playlists () {
+      return this.lists.map(list => {
+        return {
+          icon: 'album',
+          title: list.snippet.title,
+          path: `/playlists/${list.id}`
+        }
+      })
+    },
     image () {
       if (!this.song) {
         return null
@@ -70,8 +144,9 @@ export default {
 
 <style lang="sass" scoped>
 .link
-  a
+  .item
     $icon: 24px
+    $animation: .25s
     display: grid
     grid-gap: .5rem
     grid-template-columns: 3fr 7fr
@@ -81,17 +156,29 @@ export default {
     font-weight: 500
     padding: .75rem 0
     font-size: 13px
+    cursor: pointer
+    & + .dropdown-container
+      overflow: hidden
+    > .icons
+      display: grid
+      grid-template-columns: 1fr 1fr
+      .subroute
+        font-size: 1rem
+      .arrow
+        transition: transform $animation ease-in-out
+    &:not(.active)
+      .arrow
+        transform: rotateZ(-90deg) translateX(15%)
     &:hover, &:focus
       background: $neutral
     &.active, &:active
       font-weight: 600
-      color: $primary
-      background: $primary-light
+      background: $neutral
+      &[href]
+        color: $primary
+        background: $primary-light
     > *
       align-self: center
-    > .material-icons
-      font-size: $icon
-      justify-self: center
 .sidebar
   height: 100%
   width: $sidebar-size
@@ -102,6 +189,7 @@ export default {
     display: flex
     justify-content: center
     align-items: flex-end
+    min-height: $sidebar-size
     .img
       height: $sidebar-size
       background: gold
