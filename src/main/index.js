@@ -47,7 +47,10 @@ function createWindow () {
       console.log(`event`, ev, data)
       let p = events[ev](data, e.sender)
       if (p && typeof p.catch === 'function') {
-        p.catch(e => e.sender.send(`${ev}:error`, e))
+        p.catch(err => {
+          console.error(err)
+          e.sender.send(`${ev}:error`, err)
+        })
       }
     })
   }

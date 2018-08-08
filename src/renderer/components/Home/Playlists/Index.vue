@@ -19,7 +19,7 @@
       <small>Baixar playlist</small>
       <div class="right">
         <div
-          :class="{'active': download}"
+          :class="{'active': playlist.download}"
           @click="doDownload()"
           class="toggler toggler--primary">
           <span></span>
@@ -37,6 +37,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { playlistItems } from '@/services/youtube'
 import { to } from '@/utils'
+import mixin from '@/mixins/download'
 import List from '@/components/commons/List'
 
 export default {
@@ -44,13 +45,13 @@ export default {
   components: {
     List
   },
+  mixins: [mixin],
   watch: {
     '$route.params.id': 'load'
   },
   data () {
     return {
-      loading: true,
-      download: false
+      loading: true
     }
   },
   methods: {
@@ -72,14 +73,15 @@ export default {
       return arr
     },
     doDownload () {
-      this.download = !this.download
       this.updateList({
         ...this.playlist,
+        download: !this.playlist.download,
         videos: this.playlist.videos.map(v => {
-          return { ...v, downloaded: v.downloaded > 0 ? 1 : (this.download ? -2 : 0) }
+          return { ...v, downloaded: v.downloaded > 0 ? 1 : (this.playlist.download ? 0 : -2) }
         })
       })
       this.setList(this.playlist.videos)
+      this.downloadArray(this.playlist.videos)
     },
     async load () {
       this.loading = true

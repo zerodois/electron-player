@@ -20,7 +20,8 @@ for (let fa in fas) {
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 
 Vue.use(VueSnackbar, {
-  close: true
+  close: true,
+  time: 10000
 })
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.http = Vue.prototype.$http = axios

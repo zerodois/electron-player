@@ -59,9 +59,9 @@
 </template>
 
 <script>
-import { EventEmitter, to } from '@/utils'
-import { download } from '../../services/player'
+import { EventEmitter } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
+import mixin from '@/mixins/download'
 
 export default {
   name: 'List',
@@ -76,6 +76,7 @@ export default {
     },
     events: Boolean
   },
+  mixins: [mixin],
   data () {
     return {
       selected: null
@@ -104,17 +105,6 @@ export default {
       //   return this.play(item)
       // }
       // this.download(item, index)
-    },
-    async download (item, index) {
-      this.setItem({ index, item: this.getItem(item, { downloaded: -1 }) })
-      let [err] = await to(download(item))
-      let downloaded = 1
-      if (err) {
-        downloaded = 0
-        console.error(err)
-      }
-      this.setItem({ index, item: this.getItem(item, { downloaded }) })
-      // download(item)
     },
     getIcon (item) {
       if (this.isActive(item)) {

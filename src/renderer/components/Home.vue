@@ -45,10 +45,14 @@ export default {
           action: this.load
         })
       }
+      res.items = res.items.map(it => {
+        it.download = false
+        return it
+      })
       this.setPlaylists(res.items)
     }
   },
-  created () {
+  mounted () {
     if (this.playlists.length) {
       return
     }

@@ -52,9 +52,6 @@ export default {
         .then(_ => this.$router.push('/search'))
         .catch(console.error)
     }
-  },
-  created () {
-    console.log('CPAORASR', this.$router)
   }
 }
 </script>

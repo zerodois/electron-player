@@ -73,8 +73,12 @@
       <div class="img">
         <img
           v-if="image"
-          :src="image"
-          alt="">
+          :src="image">
+        <template v-else>
+          <div class="placeholder">
+            <span class="material-icons">album</span>
+          </div>
+        </template>
       </div>
     </div>
   </section>
@@ -133,7 +137,7 @@ export default {
       if (!this.song) {
         return null
       }
-      if (!this.song.downloaded || this.song.downloaded === -1) {
+      if (!this.song.downloaded || this.song.downloaded < 0) {
         return this.song.snippet.thumbnails.medium.url
       }
       return `http://localhost:${PORT}/meta/${this.file(this.song, 'jpg')}`
@@ -191,12 +195,22 @@ export default {
     align-items: flex-end
     min-height: $sidebar-size
     .img
+      width: 100%
       height: $sidebar-size
-      background: gold
+      background: $neutral
+      .placeholder
+        display: flex
+        justify-content: center
+        align-items: center
+        span
+          color: #888
+          font-size: calc(#{$sidebar-size} - 2rem)
+      .placeholder, img
+        height: 100%
       img
         object-fit: cover
-        height: 100%
   .logo
+    min-height: 88px
     display: flex
     justify-content: flex-start
     align-items: center
