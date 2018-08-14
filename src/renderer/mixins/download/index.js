@@ -17,8 +17,10 @@ export default {
       this.setItem({ index, item: { ...item, downloaded } })
       // download(item)
     },
-    downloadArray (items, action) {
-      this.setDownloads({ items, action })
+    downloadArray (items, action, clear = false) {
+      this.setDownloads({
+        items: clear ? [] : items,
+        action })
     }
   }
 }

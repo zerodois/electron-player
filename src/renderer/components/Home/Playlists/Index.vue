@@ -80,9 +80,7 @@ export default {
           return { ...v, downloaded: v.downloaded > 0 ? 1 : (this.playlist.download ? 0 : -2) }
         })
       })
-      if (this.playlist.download) {
-        this.downloadArray(this.playlist.videos, this.update)
-      }
+      this.downloadArray(this.playlist.videos, this.update, !this.playlist.download)
     },
     update (item, index) {
       this.updateItem({ item, index, id: this.playlist.id })

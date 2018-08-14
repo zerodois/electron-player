@@ -2,15 +2,12 @@ import { downloadList } from '../../services/player'
 import R from 'ramda'
 import { genIterator, map } from '../../../share'
 
-const queue = async (dispatch, iterable) => {
-  let iter = R.pipe(
+const queue = (dispatch, iterable) => {
+  return R.pipe(
     map(setDownloaded(dispatch, -1)),
     map(downloadList),
     map(setDownloaded(dispatch, 1))
   )(iterable)
-  for await (let item of iter) {
-    console.log('downloaded', item)
-  }
 }
 
 const setDownloaded = (dispatch, downloaded) => (item, index) => {
@@ -35,9 +32,16 @@ const actions = {
    * @param {{ commit }} store
    * @param {Array} payload
    */
-  setDownloads: ({ commit }, { action, items }) => {
+  setDownloads: async ({ commit, getters }, { action, items }) => {
     commit('SET_DOWNLOADS', items)
-    queue(action, genIterator(items, true)())
+    let it = queue(action, genIterator(items, true)())
+    for await (let item of it) {
+      if (!getters.get.length) {
+        return
+      }
+      console.log('downloaded', item)
+      commit('SET_DOWNLOADS', getters.get.slice(1, getters.get.length))
+    }
   },
   setDownloadItem: ({ getters, commit }, { item, index }) => {
     let list = getters.get.map(it => ({ ...it }))
