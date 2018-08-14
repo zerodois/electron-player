@@ -27,7 +27,7 @@
       </div>
     </div>
     <list
-      :list="list"
+      :list="playlist.videos"
       v-if="!loading"/>
   </template>
 </section>
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setList']),
-    ...mapActions('Playlist', ['updateList']),
+    ...mapActions('Playlist', ['updateList', 'updateItem']),
     async request () {
       if (this.playlist.videos) {
         return this.playlist.videos
@@ -80,8 +80,12 @@ export default {
           return { ...v, downloaded: v.downloaded > 0 ? 1 : (this.playlist.download ? 0 : -2) }
         })
       })
-      this.setList(this.playlist.videos)
-      this.downloadArray(this.playlist.videos)
+      if (this.playlist.download) {
+        this.downloadArray(this.playlist.videos, this.update)
+      }
+    },
+    update (item, index) {
+      this.updateItem({ item, index, id: this.playlist.id })
     },
     async load () {
       this.loading = true
@@ -102,7 +106,7 @@ export default {
       list: 'get'
     }),
     playlist () {
-      return this.playlists.find(it => it.id === this.$route.params.id)
+      return this.playlists.find(it => it.id === this.$route.params.id) || {}
     }
   },
   async created () {

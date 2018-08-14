@@ -5,6 +5,7 @@ import { download } from '../../services/player'
 export default {
   methods: {
     ...mapActions('List', ['setItem']),
+    ...mapActions('Downloads', ['setDownloads']),
     async download (item, index) {
       this.setItem({ index, item: { ...item, downloaded: -1 } })
       let [err] = await to(download(item))
@@ -16,7 +17,8 @@ export default {
       this.setItem({ index, item: { ...item, downloaded } })
       // download(item)
     },
-    downloadArray (items) {
+    downloadArray (items, action) {
+      this.setDownloads({ items, action })
     }
   }
 }
