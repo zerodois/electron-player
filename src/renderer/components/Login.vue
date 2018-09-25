@@ -1,15 +1,16 @@
 <template>
   <section class="login">
-    <img src="/static/images/logo.svg" alt="Player logo">
-    <button
-      class="btn btn--rounded btn--primary--outlined"
+    <div class="cover">
+      <img src="/static/images/background.jpg" alt="background login">
+    </div>
+    <img src="/static/images/logo-white.svg" class="logo" alt="Player logo">
+    <span class="logo-title text--white">Quark.</span>
+    <span
+      class="text--medium text--white title pointer"
       @click="popup"
       v-if="url">
-      <font-awesome-icon
-        size="2x"
-        :icon="['fab', 'google']" />
-      Entrar com a conta Google
-    </button>
+      ENTRAR
+    </span>
   </section>
 </template>
 
@@ -54,19 +55,41 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.cover
+  z-index: -1
+  &, &::after
+    display: block
+    position: fixed
+    top: 0
+    left: 0
+  &, & > img, &::after
+    width: 100%
+    height: 100%
+  &::after
+    content: ''
+    background: rgba(255, 0, 0, .7)
+  > img
+    object-fit: cover
 .login
   display: flex
+  background-color: transparent
   flex-direction: column
   align-items: center
   justify-content: center
   flex: 1
+  .logo-title
+    font-family: $logo-font
+    font-weight: 300
+    font-size: 3.5rem
+    margin-bottom: 3rem
+  .title
+    font-size: 1.75rem
   .btn
     $p: 1.25rem
     padding-left: $p
     padding-right: $p
     svg
       margin-right: .5rem
-  > img
+  > img.logo
     width: 15vw
-    margin-bottom: 1rem
 </style>

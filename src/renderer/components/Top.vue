@@ -24,6 +24,13 @@
         @click="reset()">close</span>
     </transition>
   </div>
+  <div class="logout no-select">
+    <span
+      @click="logout"
+      class="material-icons pointer text--primary">
+      exit_to_app
+    </span>
+  </div>
 </section>
 </template>
 
@@ -40,9 +47,14 @@ export default {
   },
   methods: {
     ...mapActions('Search', ['do']),
+    ...mapActions('User', ['setToken']),
     reset () {
       this.text = ''
       // this.$router.push('/')
+    },
+    logout () {
+      this.setToken(null)
+      this.$router.replace('/login')
     },
     async search (q) {
       if (!q) {
@@ -57,6 +69,13 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.logout
+  display: flex
+  flex: 1
+  justify-content: flex-end
+  padding: 1rem
+  > *
+    font-size: 2rem
 .top
   display: flex
   align-items: center

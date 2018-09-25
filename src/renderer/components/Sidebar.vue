@@ -2,7 +2,7 @@
   <section class="sidebar">
     <div class="logo">
       <img src="/static/images/logo.svg" alt="">
-      <span>Quark</span>
+      <span>Quark.</span>
     </div>
     <nav class="scroll">
       <div
@@ -71,7 +71,7 @@
     </nav>
     <div class="add-playlist pointer text-center text--primary flex-center">
       <!-- <span class="material-icons">add_circle</span> -->
-      <span class="title text-bold">
+      <span class="title text--bold">
         Criar Playlist
       </span>
     </div>
