@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import './sass/_context-menu.sass'
 @import './sass/main.sass'
 #app
   display: flex

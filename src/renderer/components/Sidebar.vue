@@ -70,9 +70,9 @@
       </div>
     </nav>
     <div class="add-playlist pointer text-center text--primary flex-center">
-      <span class="material-icons">playlist_add</span>
+      <!-- <span class="material-icons">add_circle</span> -->
       <span class="title text-bold">
-        ADICIONAR
+        Criar Playlist
       </span>
     </div>
     <div class="bottom">
@@ -222,6 +222,7 @@ export default {
   .add-playlist
     padding: 1rem .5rem
     .title
+      text-transform: uppercase
       margin-left: .5rem
   .logo
     min-height: 88px

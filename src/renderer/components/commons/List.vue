@@ -1,66 +1,95 @@
 <template>
-  <table class="list">
-    <thead>
-      <tr class="list__item">
-        <td class="min"></td>
-        <td class="min"></td>
-        <td
-          v-for="(field, $index) in fields"
-          :key="$index">{{ field.title }}</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="(item, $index) in list"
-        :key="$index"
-        tabindex="0"
-        @blur="selected = null"
-        class="list__item no-select"
-        :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
-        @dblclick="action(item, $index)"
-        @click="selected = item">
-        <td class="min text-end">
-          <span
-            @click="action(item, $index)"
-            class="material-icons icon play pointer">{{ getIcon(item) }}</span>
-          <!-- <button >Executar</button> -->
-        </td>
-        <td class="min">
-          <span
-            v-if="item.downloaded >= 0"
-            @click="download(item, $index)"
-            :class="{'downloaded': item.downloaded}"
-            class="material-icons icon down pointer">arrow_downward</span>
-          <span
-            v-else-if="item.downloaded === -2"
-            class="material-icons icon down pointer">hourglass_empty</span>
-          <template v-else>
-            <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-              <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-            </svg>
-          </template>
-          <!-- <button >Executar</button> -->
-        </td>
-        <td
-          v-for="(field, $index) in fields"
+  <section>
+    <context-menu ref="menu">
+      <li>
+        <span class="material-icons">playlist_add</span>
+        <span>
+          Adicionar à Playlist
+        </span>
+        <span class="material-icons">chevron_right</span>
+        <ul class="ctx-menu open">
+          <li
+            v-for="(playlist, $index) in playlists"
+            :key="$index"
+            @click="addToPlaylist(selected)">
+            <span class="material-icons">album</span>
+            <span>{{ playlist.snippet.title }}</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <span class="material-icons">arrow_downward</span>
+        <span>
+          Salvar no computador
+        </span>
+        <span></span>
+      </li>
+    </context-menu>
+    <table class="list">
+      <thead>
+        <tr class="list__item">
+          <td class="min"></td>
+          <td class="min"></td>
+          <td
+            v-for="(field, $index) in fields"
+            :key="$index">{{ field.title }}</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(item, $index) in list"
           :key="$index"
-          :class="{'last': $index === fields.length - 1}"
-          class="default">
-          {{ evaluate(item, field) }}
-        </td>
-        <!-- <td>
-          <button
-            v-if="!item.downloaded"
-            @click="action(item)">Baixar</button>
-        </td> -->
-      </tr>
-    </tbody>
-  </table>
+          tabindex="0"
+          @blur="selected = null"
+          @contextmenu.prevent="context(item)"
+          class="list__item no-select"
+          :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
+          @dblclick="action(item, $index)"
+          @click="selected = item">
+          <td class="min text-end">
+            <span
+              @click="action(item, $index)"
+              class="material-icons icon play pointer">{{ getIcon(item) }}</span>
+            <!-- <button >Executar</button> -->
+          </td>
+          <td class="min">
+            <span
+              v-if="item.downloaded >= 0"
+              @click="download(item, $index)"
+              :class="{'downloaded': item.downloaded}"
+              class="material-icons icon down pointer">arrow_downward</span>
+            <span
+              v-else-if="item.downloaded === -2"
+              class="material-icons icon down pointer">hourglass_empty</span>
+            <template v-else>
+              <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+              </svg>
+            </template>
+            <!-- <button >Executar</button> -->
+          </td>
+          <td
+            v-for="(field, $index) in fields"
+            :key="$index"
+            :class="{'last': $index === fields.length - 1}"
+            class="default">
+            {{ evaluate(item, field) }}
+          </td>
+          <!-- <td>
+            <button
+              v-if="!item.downloaded"
+              @click="action(item)">Baixar</button>
+          </td> -->
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </template>
 
 <script>
 import { EventEmitter } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
+import ContextMenu from 'vue-context-menu'
 import mixin from '@/mixins/download'
 
 export default {
@@ -77,6 +106,9 @@ export default {
     events: Boolean
   },
   mixins: [mixin],
+  components: {
+    ContextMenu
+  },
   data () {
     return {
       selected: null
@@ -84,6 +116,13 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setItem']),
+    addToPlaylist (item) {
+      this.$snack.show({ text: 'Música adicionada à playlist', button: 'fechar' })
+    },
+    context (item) {
+      this.selected = item
+      this.$refs.menu.open()
+    },
     evaluate (item, field) {
       if (typeof field.value === 'function') {
         return field.value(item)
@@ -101,10 +140,6 @@ export default {
         return
       }
       return this.play(item)
-      // if (item.downloaded) {
-      //   return this.play(item)
-      // }
-      // this.download(item, index)
     },
     getIcon (item) {
       if (this.isActive(item)) {
@@ -114,7 +149,6 @@ export default {
         return 'play_circle_outline'
       }
       return 'play_circle_outline'
-      // return 'arrow_downward'
     },
     getItem (item, rewrite) {
       return { ...item, ...rewrite }
@@ -130,6 +164,9 @@ export default {
     ...mapGetters('Player', {
       song: 'get',
       running: 'getRunning'
+    }),
+    ...mapGetters('Playlist', {
+      playlists: 'get'
     })
   }
 }

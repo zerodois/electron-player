@@ -1,0 +1,35 @@
+.ctx-menu-container
+  border: 0
+  .ctx-menu
+    border: 0
+    $m: 1.25rem
+    padding: .75rem 0
+    box-shadow: 0 4px 15px -3px rgba(0, 0, 0, .7)
+    li
+      @extend .pointer
+      position: relative
+      white-space: nowrap
+      display: flex
+      justify-content: center
+      align-items: center
+      padding: .25rem $m .25rem 0
+      .ctx-menu
+        left: 100%
+        top: 0
+      &:hover
+        background: $neutral
+        .ctx-menu
+          display: block
+      > span:nth-of-type(3)
+        display: block
+        width: 1.5rem
+        font-size: 1.25rem
+        margin-left: $m
+        margin-right: -0.5rem
+      > span:nth-of-type(2)
+        display: block
+        flex: 1
+        font-size: .8rem
+      > span:first-child
+        font-size: 1.5rem
+        margin: 0 #{$m - .5rem} 0 $m
