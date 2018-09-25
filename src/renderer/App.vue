@@ -16,4 +16,6 @@ export default {
   display: flex
   height: 100%
   flex-direction: column
+  .list
+    width: 85%
 </style>

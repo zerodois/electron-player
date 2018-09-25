@@ -142,7 +142,6 @@ export default {
   margin-top: 2rem
   &--no-top
     margin-top: .5rem
-  width: 85%
   border-collapse: collapse
   .last
     max-width: 10rem

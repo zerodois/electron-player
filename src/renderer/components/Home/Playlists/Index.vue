@@ -14,15 +14,17 @@
         </div>
       </div>
     </header>
-    <div class="action-bar">
-      <div class="search"></div>
-      <small>Baixar playlist</small>
-      <div class="right">
-        <div
-          :class="{'active': playlist.download}"
-          @click="doDownload()"
-          class="toggler toggler--primary">
-          <span></span>
+    <div class="list">
+      <div class="action-bar">
+        <div class="search"></div>
+        <small>Baixar playlist</small>
+        <div class="right">
+          <div
+            :class="{'active': playlist.download}"
+            @click="doDownload()"
+            class="toggler toggler--primary">
+            <span></span>
+          </div>
         </div>
       </div>
     </div>

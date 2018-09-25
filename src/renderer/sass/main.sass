@@ -10,6 +10,10 @@ body, html
   cursor: pointer
 .default
   cursor: default
+.flex-center
+  display: flex
+  justify-content: center
+  align-items: center
 img
   max-width: 100%
 a
@@ -23,6 +27,10 @@ a
   @each $type in $list
     &--#{$type}
       color: map-get($colors, $type)
+  &-medium
+    font-weight: 500
+  &-bold
+    font-weight: bold
   &-end
     text-align: end
   &-center

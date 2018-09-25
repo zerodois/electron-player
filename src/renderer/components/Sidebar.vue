@@ -69,6 +69,12 @@
         </template>
       </div>
     </nav>
+    <div class="add-playlist pointer text-center text--primary flex-center">
+      <span class="material-icons">playlist_add</span>
+      <span class="title text-bold">
+        ADICIONAR
+      </span>
+    </div>
     <div class="bottom">
       <div class="img">
         <img
@@ -101,7 +107,7 @@ export default {
   data () {
     return {
       routes: routes.map(it => {
-        it.active = false
+        it.active = true
         return it
       })
     }
@@ -161,6 +167,10 @@ export default {
     padding: .75rem 0
     font-size: 13px
     cursor: pointer
+    > span
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
     & + .dropdown-container
       overflow: hidden
     > .icons
@@ -209,6 +219,10 @@ export default {
         height: 100%
       img
         object-fit: cover
+  .add-playlist
+    padding: 1rem .5rem
+    .title
+      margin-left: .5rem
   .logo
     min-height: 88px
     display: flex
