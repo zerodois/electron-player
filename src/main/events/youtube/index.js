@@ -1,4 +1,4 @@
-import { get, playlists, playlistItems } from '../../services/youtube'
+import { get, playlists, playlistItems, put } from '../../services/youtube'
 
 export default {
   'youtube:get': async (config, req) => {
@@ -9,12 +9,13 @@ export default {
     let data = await playlists(config)
     req.send('youtube:playlists:response', data)
   },
+  'youtube:put': async (config, res) => {
+    let data = await put(config)
+    console.log('REPONSE -------->', data)
+    res.send('youtube:put:response', data)
+  },
   'youtube:playlist:items': async (config, req) => {
-    try {
-      let data = await playlistItems(config)
-      req.send('youtube:playlist:items:response', data)
-    } catch (error) {
-      console.error(error)
-    }
+    let data = await playlistItems(config)
+    req.send('youtube:playlist:items:response', data)
   }
 }

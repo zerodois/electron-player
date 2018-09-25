@@ -3,7 +3,7 @@ import path from 'path'
 import { google } from 'googleapis'
 const OAuth2 = google.auth.OAuth2
 
-const SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
+const SCOPES = ['https://www.googleapis.com/auth/youtube']
 const LOCAL = path.resolve('.', 'client_secret.json')
 
 let token = JSON.parse(fs.readFileSync(LOCAL, 'utf8'))

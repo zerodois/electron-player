@@ -9,6 +9,16 @@ export const search = q => {
   })
 }
 
+export const put = (playlistId, videoId) => {
+  return new Promise((resolve, reject) => {
+    let token = store.getters['User/getToken']
+    console.log(`VAMO TOKEN`, token)
+    ipcRenderer.send('youtube:put', { token, playlistId, videoId })
+    ipcRenderer.on('youtube:put:response', (_, data) => resolve(data))
+    ipcRenderer.on('youtube:put:error', (_, err) => reject(err))
+  })
+}
+
 export const playlists = (q) => {
   return new Promise((resolve, reject) => {
     ipcRenderer.send('youtube:playlists', { token: store.getters['User/getToken'], ...q })

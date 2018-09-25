@@ -5,7 +5,7 @@ import { promisify } from 'bluebird-lst'
 
 export const get = async (query) => {
   oauth2Client.credentials = query.token
-  var service = google.youtube('v3')
+  let service = google.youtube('v3')
   let config = {
     auth: oauth2Client,
     part: 'snippet',
@@ -25,7 +25,7 @@ export const get = async (query) => {
 
 export const playlists = async (q) => {
   oauth2Client.credentials = q.token
-  var service = google.youtube('v3')
+  let service = google.youtube('v3')
   let config = {
     auth: oauth2Client,
     part: 'snippet,status',
@@ -36,9 +36,30 @@ export const playlists = async (q) => {
   return response.data
 }
 
+export const put = ({ playlistId, videoId, token }) => {
+  oauth2Client.credentials = token
+  let service = google.youtube('v3')
+  let config = {
+    auth: oauth2Client,
+    part: 'snippet',
+    resource: {
+      snippet: {
+        playlistId,
+        resourceId: {
+          kind: 'youtube#video',
+          videoId
+        }
+      }
+    }
+  }
+  let fn = promisify(service.playlistItems.insert).bind(service)
+  return fn(config)
+    .then(r => r.data)
+}
+
 export const playlistItems = async (q) => {
   oauth2Client.credentials = q.token
-  var service = google.youtube('v3')
+  let service = google.youtube('v3')
   let config = {
     auth: oauth2Client,
     part: 'snippet,status',

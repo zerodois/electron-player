@@ -11,7 +11,7 @@
           <li
             v-for="(playlist, $index) in playlists"
             :key="$index"
-            @click="addToPlaylist(selected)">
+            @click="addToPlaylist(playlist, context)">
             <span class="material-icons">album</span>
             <span>{{ playlist.snippet.title }}</span>
           </li>
@@ -41,7 +41,7 @@
           :key="$index"
           tabindex="0"
           @blur="selected = null"
-          @contextmenu.prevent="context(item)"
+          @contextmenu.prevent="open(item)"
           class="list__item no-select"
           :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
           @dblclick="action(item, $index)"
@@ -89,6 +89,7 @@
 <script>
 import { EventEmitter } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
+import { put } from '../../services/youtube'
 import ContextMenu from 'vue-context-menu'
 import mixin from '@/mixins/download'
 
@@ -111,16 +112,22 @@ export default {
   },
   data () {
     return {
-      selected: null
+      selected: null,
+      context: null
     }
   },
   methods: {
     ...mapActions('List', ['setItem']),
-    addToPlaylist (item) {
-      this.$snack.show({ text: 'Música adicionada à playlist', button: 'fechar' })
+    addToPlaylist (playlist, video) {
+      let s = () => this.$snack.show({ text: 'Música adicionada à playlist', button: 'fechar' })
+      let e = () => this.$snack.danger({ text: 'Erro ao adicionar playlist', button: 'tentar novamente', action: () => this.addToPlaylist(playlist, video) })
+      put(playlist.id, video.id.videoId)
+        .then(s)
+        .catch(e)
+        .then(() => (this.context = null))
     },
-    context (item) {
-      this.selected = item
+    open (item) {
+      this.context = item
       this.$refs.menu.open()
     },
     evaluate (item, field) {
