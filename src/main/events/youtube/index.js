@@ -11,7 +11,6 @@ export default {
   },
   'youtube:put': async (config, res) => {
     let data = await put(config)
-    console.log('REPONSE -------->', data)
     res.send('youtube:put:response', data)
   },
   'youtube:playlist:items': async (config, req) => {

@@ -118,11 +118,16 @@ export default {
   },
   methods: {
     ...mapActions('List', ['setItem']),
+    ...mapActions('Playlist', ['addVideo']),
     addToPlaylist (playlist, video) {
       let s = () => this.$snack.show({ text: 'Música adicionada à playlist', button: 'fechar' })
-      let e = () => this.$snack.danger({ text: 'Erro ao adicionar playlist', button: 'tentar novamente', action: () => this.addToPlaylist(playlist, video) })
+      let e = (err) => {
+        console.error(err)
+        this.$snack.danger({ text: 'Erro ao adicionar playlist', button: 'tentar novamente', action: () => this.addToPlaylist(playlist, video) })
+      }
       put(playlist.id, video.id.videoId)
         .then(s)
+        .then(() => this.addVideo({ playlist, video }))
         .catch(e)
         .then(() => (this.context = null))
     },

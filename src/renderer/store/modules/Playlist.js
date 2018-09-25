@@ -8,6 +8,12 @@ const actions = {
     let index = getters.get.findIndex(item => item.id === playlist.id)
     commit('UPDATE_PLAYLISTS', { index, playlist })
   },
+  addVideo: ({ commit, getters }, { playlist, video }) => {
+    playlist = { ...playlist }
+    playlist.videos = [...(playlist.videos), video]
+    let index = getters.get.findIndex(p => p.id === playlist.id)
+    commit('UPDATE_PLAYLISTS', { index, playlist })
+  },
   updateItem: ({ commit, getters }, { index, item, id }) => {
     let playlist = getters.get.findIndex(item => item.id === id)
     commit('UPDATE_ITEM', { index, item, playlist })
