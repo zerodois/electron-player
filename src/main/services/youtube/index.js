@@ -57,12 +57,28 @@ export const put = ({ playlistId, videoId, token }) => {
     .then(r => r.data)
 }
 
+export const remove = ({ id, token }) => {
+  oauth2Client.credentials = token
+  let service = google.youtube('v3')
+  let config = {
+    auth: oauth2Client,
+    id
+  }
+  let fn = promisify(service.playlistItems.delete).bind(service)
+  return fn(config)
+    .then(r => r.data)
+    .then(d => {
+      console.log('REPOSTA --------->', JSON.stringify(d, null, 2))
+      return d
+    })
+}
+
 export const playlistItems = async (q) => {
   oauth2Client.credentials = q.token
   let service = google.youtube('v3')
   let config = {
     auth: oauth2Client,
-    part: 'snippet,status',
+    part: 'snippet,contentDetails',
     maxResults: 50
   }
   let fn = promisify(service.playlistItems.list).bind(service)

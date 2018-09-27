@@ -48,12 +48,14 @@ export default {
   methods: {
     ...mapActions('Search', ['do']),
     ...mapActions('User', ['setToken']),
+    ...mapActions('Playlist', ['setPlaylists']),
     reset () {
       this.text = ''
       // this.$router.push('/')
     },
     logout () {
       this.setToken(null)
+      this.setPlaylists([])
       this.$router.replace('/login')
     },
     async search (q) {

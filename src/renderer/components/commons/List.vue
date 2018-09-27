@@ -1,29 +1,42 @@
 <template>
   <section>
     <context-menu ref="menu">
-      <li>
-        <span class="material-icons">playlist_add</span>
-        <span>
-          Adicionar à Playlist
-        </span>
-        <span class="material-icons">chevron_right</span>
-        <ul class="ctx-menu open">
-          <li
-            v-for="(playlist, $index) in playlists"
-            :key="$index"
-            @click="addToPlaylist(playlist, context)">
-            <span class="material-icons">album</span>
-            <span>{{ playlist.snippet.title }}</span>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <span class="material-icons">arrow_downward</span>
-        <span>
-          Salvar no computador
-        </span>
-        <span></span>
-      </li>
+      <template v-if="context">
+        <li>
+          <span class="material-icons">playlist_add</span>
+          <span>
+            Adicionar à Playlist
+          </span>
+          <span class="material-icons">chevron_right</span>
+          <ul class="ctx-menu open">
+            <li
+              v-for="(playlist, $index) in playlists"
+              :key="$index"
+              @click="addToPlaylist(playlist, context.item)">
+              <span class="material-icons">album</span>
+              <span>{{ playlist.snippet.title }}</span>
+            </li>
+          </ul>
+        </li>
+        <li
+          @click="download(context.item, context.index)"
+          v-if="!context.item.downloaded">
+          <span class="material-icons">arrow_downward</span>
+          <span>
+            Salvar no computador
+          </span>
+          <span></span>
+        </li>
+        <li
+          @click="remove(context.item)"
+          v-if="playlist">
+          <span class="material-icons">delete</span>
+          <span>
+            Remover desta playlist
+          </span>
+          <span></span>
+        </li>
+      </template>
     </context-menu>
     <table class="list">
       <thead>
@@ -41,7 +54,7 @@
           :key="$index"
           tabindex="0"
           @blur="selected = null"
-          @contextmenu.prevent="open(item)"
+          @contextmenu.prevent="open({ item, index: $index })"
           class="list__item no-select"
           :class="[{'selected': selected === item}, {'active': song && song.id.videoId === item.id.videoId}]"
           @dblclick="action(item, $index)"
@@ -89,7 +102,7 @@
 <script>
 import { EventEmitter } from '@/utils'
 import { mapGetters, mapActions } from 'vuex'
-import { put } from '../../services/youtube'
+import { put, remove } from '../../services/youtube'
 import ContextMenu from 'vue-context-menu'
 import mixin from '@/mixins/download'
 
@@ -113,26 +126,44 @@ export default {
   data () {
     return {
       selected: null,
-      context: null
+      context: null,
+      playlist: this.$route.name === 'Detalhes Playlist' && this.$route.params.id
     }
   },
   methods: {
     ...mapActions('List', ['setItem']),
-    ...mapActions('Playlist', ['addVideo']),
-    addToPlaylist (playlist, video) {
-      let s = () => this.$snack.show({ text: 'Música adicionada à playlist', button: 'fechar' })
-      let e = (err) => {
+    ...mapActions('Playlist', ['addVideo', 'removeVideo']),
+    success (text) {
+      return () => this.$snack.show({ text, button: 'fechar' })
+    },
+    error ({ text, action }) {
+      return err => {
         console.error(err)
-        this.$snack.danger({ text: 'Erro ao adicionar playlist', button: 'tentar novamente', action: () => this.addToPlaylist(playlist, video) })
+        this.$snack.danger({ text, button: 'tentar novamente', action })
       }
-      put(playlist.id, video.id.videoId)
-        .then(s)
-        .then(() => this.addVideo({ playlist, video }))
-        .catch(e)
+    },
+    addToPlaylist (playlist, video) {
+      let videoId = video.id.videoId
+      put(playlist.id, videoId)
+        .then(json => {
+          let nVideo = { ...video, id: { videoId, id: json.id } }
+          this.addVideo({ playlist, video: nVideo })
+        })
+        .then(this.success('Música adicionada à playlist'))
+        .catch(this.error({ text: 'Erro ao adicionar playlist', action: () => this.addToPlaylist(playlist, video) }))
+        .then(() => (this.context = null))
+    },
+    remove (video) {
+      let videoId = video.id.videoId
+      remove(video.id.id)
+        .then(() => this.removeVideo({ playlist: this.active, videoId }))
+        .then(this.success('Música removida desta playlist'))
+        .catch(this.error({ text: 'Erro ao remover da playlist', action: () => this.remove(video) }))
         .then(() => (this.context = null))
     },
     open (item) {
       this.context = item
+      this.selected = item
       this.$refs.menu.open()
     },
     evaluate (item, field) {
@@ -179,7 +210,13 @@ export default {
     }),
     ...mapGetters('Playlist', {
       playlists: 'get'
-    })
+    }),
+    active () {
+      if (!this.playlist) {
+        return null
+      }
+      return this.playlists.find(p => p.id === this.playlist)
+    }
   }
 }
 </script>

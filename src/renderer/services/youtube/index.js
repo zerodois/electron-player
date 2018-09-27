@@ -18,6 +18,15 @@ export const put = (playlistId, videoId) => {
   })
 }
 
+export const remove = (id) => {
+  return new Promise((resolve, reject) => {
+    let token = store.getters['User/getToken']
+    ipcRenderer.send('youtube:delete', { token, id })
+    ipcRenderer.on('youtube:delete:response', (_, data) => resolve(data))
+    ipcRenderer.on('youtube:delete:error', (_, err) => reject(err))
+  })
+}
+
 export const playlists = (q) => {
   return new Promise((resolve, reject) => {
     ipcRenderer.send('youtube:playlists', { token: store.getters['User/getToken'], ...q })

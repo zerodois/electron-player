@@ -1,4 +1,4 @@
-import { get, playlists, playlistItems, put } from '../../services/youtube'
+import { get, playlists, playlistItems, put, remove } from '../../services/youtube'
 
 export default {
   'youtube:get': async (config, req) => {
@@ -12,6 +12,10 @@ export default {
   'youtube:put': async (config, res) => {
     let data = await put(config)
     res.send('youtube:put:response', data)
+  },
+  'youtube:delete': async (config, res) => {
+    let data = await remove(config)
+    res.send('youtube:delete:response', data)
   },
   'youtube:playlist:items': async (config, req) => {
     let data = await playlistItems(config)

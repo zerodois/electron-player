@@ -30,6 +30,7 @@
     </div>
     <list
       :list="playlist.videos"
+      :fields="fields"
       v-if="!loading"/>
   </template>
 </section>
@@ -39,8 +40,11 @@
 import { mapGetters, mapActions } from 'vuex'
 import { playlistItems } from '@/services/youtube'
 import { to } from '@/utils'
+import moment from 'moment'
+import 'moment/locale/pt-br'
 import mixin from '@/mixins/download'
 import List from '@/components/commons/List'
+moment.locale('pt-br')
 
 export default {
   name: 'Playlist',
@@ -53,22 +57,23 @@ export default {
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      fields: [
+        { title: 'Titulo', key: 'snippet.title' },
+        { title: 'Adicionado em', value: item => moment(item.snippet.publishedAt).calendar() }
+      ]
     }
   },
   methods: {
     ...mapActions('List', ['setList']),
     ...mapActions('Playlist', ['updateList', 'updateItem']),
     async request () {
-      if (this.playlist.videos) {
-        return this.playlist.videos
-      }
       let data = await playlistItems({
         playlistId: this.$route.params.id,
         part: 'snippet,id,contentDetails'
       })
       let arr = data.items.map(it => {
-        it.id = { videoId: it.contentDetails.videoId }
+        it.id = { videoId: it.contentDetails.videoId, id: it.id }
         return it
       })
       this.updateList({ ...this.playlist, videos: arr })
@@ -88,8 +93,14 @@ export default {
       this.updateItem({ item, index, id: this.playlist.id })
     },
     async load () {
+      let param = this.$route.params.id
+      this.setList(this.playlist.videos || [])
       this.loading = true
       let [err, data] = await to(this.request())
+      if (param !== this.$route.params.id) {
+        return
+      }
+      console.log('FOI')
       this.loading = false
       if (err) {
         console.error(err)
