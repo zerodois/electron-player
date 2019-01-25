@@ -239,6 +239,8 @@ section
   grid-template-columns: 3fr 10fr 3fr
   .left
     display: flex
+    max-width: $sidebar-size
+    box-sizing: border-box
     padding: 0 1rem
     align-items: center
     font-size: .85rem

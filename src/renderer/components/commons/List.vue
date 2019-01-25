@@ -44,6 +44,7 @@
           <td class="min"></td>
           <td class="min"></td>
           <td
+            class="list__item__column"
             v-for="(field, $index) in fields"
             :key="$index">{{ field.title }}</td>
         </tr>
@@ -270,6 +271,7 @@ export default {
     td
       padding: .5rem 0
       &:last-child
+        min-width: 8rem
         padding-right: .5rem
       > *
         vertical-align: middle
