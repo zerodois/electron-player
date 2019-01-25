@@ -1,10 +1,17 @@
 <template>
   <section>
     <div class="left">
-      <template v-if="song">
+      <template v-if="song && !config.coverExpanded">
+        <img
+          @click="setCover(!config.coverExpanded)"
+          class="pointer cover"
+          :src="imageCover('medium')"
+        />
+      </template>
+      <div v-if="song">
         <span class="title">{{ song.snippet.title }}</span>
         <span>{{ song.snippet.channelTitle }}</span>
-      </template>
+      </div>
     </div>
     <div class="center">
       <div class="controls no-select">
@@ -76,6 +83,7 @@ export default {
       'setRepeat',
       'setShuffle'
     ]),
+    ...mapActions('Config', { setCover: 'setCoverExpanded' }),
     getUrl (item) {
       if (item.downloaded > 0) {
         let file = this.file(item)
@@ -142,6 +150,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('Config', { config: 'get' }),
     ...mapGetters('List', { list: 'get' }),
     ...mapGetters('Player', {
       song: 'get',
@@ -230,11 +239,24 @@ section
   grid-template-columns: 3fr 10fr 3fr
   .left
     display: flex
-    flex-direction: column
     padding: 0 1rem
-    justify-content: center
+    align-items: center
     font-size: .85rem
+    .cover
+      margin-right: .5rem
+      $sz: 3.5rem
+      border-radius: 3px
+      height: $sz
+      width: $sz
+      object-fit: cover
+    > div
+      flex: 1
+      min-width: 0
     .title
+      display: block
+      text-overflow: ellipsis
+      overflow: hidden
+      white-space: nowrap
       font-size: 1rem
       font-weight: 500
   .center

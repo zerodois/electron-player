@@ -75,24 +75,30 @@
         Criar Playlist
       </span>
     </div>
-    <div class="bottom">
-      <div class="img">
-        <img
-          v-if="image"
-          :src="image">
-        <template v-else>
-          <div class="placeholder">
-            <span class="material-icons">album</span>
+    <transition name="dropdown-inverse">
+      <div class="bottom" v-if="config.coverExpanded">
+        <div class="img">
+          <div class="hover">
+            <span class="btn-hide flex-center pointer">
+              <i class="material-icons" @click="setExpanded(!config.coverExpanded)">arrow_drop_down</i>
+            </span>
           </div>
-        </template>
+          <img
+            v-if="imageCover()"
+            :src="imageCover('high')">
+          <template v-else>
+            <div class="fallback">
+              <span class="material-icons">album</span>
+            </div>
+          </template>
+        </div>
       </div>
-    </div>
+    </transition>
   </section>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { PORT } from '../../share'
+import { mapGetters, mapActions } from 'vuex'
 import mixin from '@/mixins'
 
 const routes = [
@@ -113,6 +119,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('Config', { setExpanded: 'setCoverExpanded' }),
     isArray (route) {
       return route.items
     },
@@ -121,6 +128,9 @@ export default {
         return route.items
       }
       return this[route.items]
+    },
+    setConfig (config) {
+      alert(JSON.stringify(config, null, 2))
     }
   },
   computed: {
@@ -130,6 +140,9 @@ export default {
     ...mapGetters('Playlist', {
       lists: 'get'
     }),
+    ...mapGetters('Config', {
+      config: 'get'
+    }),
     playlists () {
       return this.lists.map(list => {
         return {
@@ -138,21 +151,17 @@ export default {
           path: `/playlists/${list.id}`
         }
       })
-    },
-    image () {
-      if (!this.song) {
-        return null
-      }
-      if (!this.song.downloaded || this.song.downloaded < 0) {
-        return this.song.snippet.thumbnails.medium.url
-      }
-      return `http://localhost:${PORT}/meta/${this.file(this.song, 'jpg')}`
     }
   }
 }
 </script>
 
 <style lang="sass" scoped>
+.cover-enter-active, .cover-leave-active
+  transition: all .5s
+.cover-enter, .cover-leave-to
+  max-height: 0
+
 .link
   .item
     $icon: 24px
@@ -208,14 +217,39 @@ export default {
       width: 100%
       height: $sidebar-size
       background: $neutral
-      .placeholder
+      position: relative
+      overflow: hidden
+      .hover
+        background-image: linear-gradient(rgba(0, 0, 0, .4), transparent);
+        opacity: 0
+        transition: opacity .2s ease-in
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        display: flex
+        justify-content: flex-end
+      &:hover .hover
+        opacity: 1
+      .btn-hide
+        $sz: 2rem
+        background-color: white
+        border-radius: 3px
+        margin-top: 10px
+        margin-right: 10px
+        height: $sz
+        width: $sz
+        i
+          font-size: 1.5rem
+          color: $black
+      .fallback
         display: flex
         justify-content: center
         align-items: center
         span
           color: #888
           font-size: calc(#{$sidebar-size} - 2rem)
-      .placeholder, img
+      .fallback, img
         height: 100%
       img
         object-fit: cover
