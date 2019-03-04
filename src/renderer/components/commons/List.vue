@@ -53,7 +53,11 @@
               :class="{'ghost': field.sortable}">
               {{ field.title }}
             </span>
-            <span class="material-icons arrow text--primary">keyboard_arrow_up</span>
+            <span
+              v-if="sort.type === field.title"
+              class="material-icons arrow text--primary">
+              {{ sort.asc ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+            </span>
           </td>
         </tr>
       </thead>
@@ -119,6 +123,7 @@ export default {
   name: 'List',
   props: {
     list: Array,
+    order: Object,
     fields: {
       type: Array,
       default: _ => [
@@ -220,6 +225,9 @@ export default {
     ...mapGetters('Playlist', {
       playlists: 'get'
     }),
+    sort () {
+      return this.order || {}
+    },
     active () {
       if (!this.playlist) {
         return null
