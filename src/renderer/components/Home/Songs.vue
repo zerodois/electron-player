@@ -1,15 +1,18 @@
 <template>
-  <section>
+  <section v-if="list.length">
     <span class="title title--main">Minhas músicas</span>
     <button class="btn btn--primary--flat">EXECUTAR</button>
     <list-component
       class="list--no-top"
       :list="list" />
   </section>
+  <not-found
+    v-else />
 </template>
 
 <script>
 import ListComponent from '@/components/commons/List'
+import NotFound from '@/components/commons/NotFound'
 import { to, EventEmitter } from '@/utils'
 import { get } from '@/services/songs'
 import { mapActions, mapGetters } from 'vuex'
@@ -17,7 +20,8 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Songs',
   components: {
-    ListComponent
+    ListComponent,
+    NotFound
   },
   methods: {
     ...mapActions('List', ['setList']),

@@ -10,10 +10,16 @@ body, html
   cursor: pointer
 .default
   cursor: default
-.flex-center
+.flex
   display: flex
-  justify-content: center
-  align-items: center
+  &-column
+    flex-direction: column
+  &-1
+    flex: 1
+  &-center
+    display: flex
+    justify-content: center
+    align-items: center
 img
   max-width: 100%
 a
