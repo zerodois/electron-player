@@ -49,7 +49,7 @@ function createWindow () {
       if (p && typeof p.catch === 'function') {
         p.catch(err => {
           console.error(err)
-          e.sender.send(`${ev}:error`, err)
+          e.sender.send(`${ev}:error`, err.message)
         })
       }
     })
