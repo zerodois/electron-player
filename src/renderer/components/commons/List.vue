@@ -46,13 +46,21 @@
           <td
             class="list__item__column"
             v-for="(field, $index) in fields"
-            :key="$index">{{ field.title }}</td>
+            :key="$index">
+            <span
+              @click="field.sortable ? $emit('sort', field) : null"
+              class="default no-select"
+              :class="{'ghost': field.sortable}">
+              {{ field.title }}
+            </span>
+            <span class="material-icons arrow text--primary">keyboard_arrow_up</span>
+          </td>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="(item, $index) in list"
-          :key="$index"
+          :key="item.contentDetails.videoId"
           tabindex="0"
           @blur="selected = null"
           @contextmenu.prevent="open({ item, index: $index })"
@@ -132,7 +140,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('List', ['setItem']),
+    ...mapActions('List', ['setItem', 'setList']),
     ...mapActions('Playlist', ['addVideo', 'removeVideo']),
     success (text) {
       return () => this.$snack.show({ text, button: 'fechar' })
@@ -258,6 +266,8 @@ export default {
 
   &__item
     outline: none
+    .arrow
+      font-size: 1.25rem
     &:not(:last-child)
       border-bottom: thin solid $neutral
     &:not(.active)

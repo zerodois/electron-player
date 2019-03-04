@@ -8,7 +8,7 @@
       <div class="action-bar" v-if="!loading || playlist.videos.length">
         <div class="search"></div>
         <template v-if="loading">
-          <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <svg class="spinner" width="1.3rem" height="1rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
             <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
           </svg>
         </template>
@@ -24,6 +24,7 @@
       </div>
     </div>
     <list
+      @sort="sort"
       :list="playlist.videos"
       :fields="fields"
       v-if="!loading || playlist.videos.length"/>
@@ -61,8 +62,18 @@ export default {
     return {
       loading: true,
       fields: [
-        { title: 'Titulo', key: 'snippet.title' },
-        { title: 'Adicionado em', value: item => moment(item.snippet.publishedAt).calendar() }
+        {
+          title: 'Titulo',
+          key: 'snippet.title',
+          sortable: true,
+          eval: item => item.snippet.title.toLowerCase()
+        },
+        {
+          title: 'Adicionado em',
+          value: item => moment(item.snippet.publishedAt).calendar(),
+          sortable: true,
+          eval: item => moment(item.snippet.publishedAt).unix()
+        }
       ]
     }
   },
@@ -80,6 +91,15 @@ export default {
       })
       this.updateList({ ...this.playlist, videos: arr })
       return arr
+    },
+    sort (column) {
+      const videos = this.playlist.videos.slice()
+      videos.sort((a, b) => {
+        const x = column.eval(a)
+        const y = column.eval(b)
+        return x < y ? -1 : x > y ? 1 : 0
+      })
+      this.updateList({ ...this.playlist, videos })
     },
     doDownload () {
       this.updateList({
