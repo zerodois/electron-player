@@ -15,9 +15,12 @@
       </div>
     </header>
     <div class="list">
-      <div class="action-bar" v-if="!loading">
+      <div class="action-bar" v-if="!loading || playlist.videos.length">
         <div class="search"></div>
-        <small>Baixar playlist</small>
+        <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
+        <small style="margin-left: .5rem">Baixar playlist</small>
         <div class="right">
           <div
             :class="{'active': playlist.download}"
@@ -31,7 +34,7 @@
     <list
       :list="playlist.videos"
       :fields="fields"
-      v-if="!loading"/>
+      v-if="!loading || playlist.videos.length"/>
     <div class="loading-content" v-else>
       <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
         <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
