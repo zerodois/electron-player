@@ -4,7 +4,7 @@ import { google } from 'googleapis'
 const OAuth2 = google.auth.OAuth2
 
 const SCOPES = ['https://www.googleapis.com/auth/youtube']
-const LOCAL = path.resolve('.', 'client_secret.json')
+const LOCAL = path.join(__dirname, 'client_secret.json')
 
 let token = JSON.parse(fs.readFileSync(LOCAL, 'utf8'))
 const clientSecret = token.installed.client_secret
