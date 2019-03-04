@@ -51,7 +51,7 @@ export default {
         regionCode: 'BR', // Região Brasil
         videoCategoryId: '10', // Categoria Música
         token: this.token,
-        maxResults: 15
+        maxResults: 17
       }
       const [err, results] = await to(videos(q))
       if (err) {
