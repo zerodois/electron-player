@@ -1,15 +1,13 @@
-import fs from 'fs'
-import path from 'path'
 import { google } from 'googleapis'
+
+const token = require('./client_secret.json')
 const OAuth2 = google.auth.OAuth2
 
 const SCOPES = ['https://www.googleapis.com/auth/youtube']
-const LOCAL = path.join(__dirname, 'client_secret.json')
-
-let token = JSON.parse(fs.readFileSync(LOCAL, 'utf8'))
 const clientSecret = token.installed.client_secret
 const clientId = token.installed.client_id
 const redirectUrl = token.installed.redirect_uris[0]
+
 export const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl)
 
 // const authorize = (callback) => {
