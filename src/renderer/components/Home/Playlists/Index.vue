@@ -15,7 +15,7 @@
       </div>
     </header>
     <div class="list">
-      <div class="action-bar">
+      <div class="action-bar" v-if="!loading">
         <div class="search"></div>
         <small>Baixar playlist</small>
         <div class="right">
@@ -32,6 +32,11 @@
       :list="playlist.videos"
       :fields="fields"
       v-if="!loading"/>
+    <div class="loading-content" v-else>
+      <svg class="spinner" width="1.3rem" height="1.3rem" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+      </svg>
+    </div>
   </template>
 </section>
 </template>
@@ -100,7 +105,6 @@ export default {
       if (param !== this.$route.params.id) {
         return
       }
-      console.log('FOI')
       this.loading = false
       if (err) {
         console.error(err)
@@ -136,6 +140,9 @@ export default {
   .right
     margin: 0 1rem
     width: 2rem
+.loading-content
+  padding-top: 10vh
+  text-align: center
 header
   margin: 2rem 0 0 0
   display: flex
