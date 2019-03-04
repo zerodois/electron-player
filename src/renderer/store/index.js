@@ -8,5 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules,
   strict: process.env.NODE_ENV !== 'production',
-  plugins: [createPersistedState()]
+  plugins: [createPersistedState({
+    paths: ['User', 'Config', 'Player', 'Playlist']
+  })]
 })

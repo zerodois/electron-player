@@ -37,6 +37,10 @@ export default {
   methods: {
     ...mapActions('Trends', ['setList']),
     async load () {
+      if (this.videos.length) {
+        return
+      }
+      alert('passou aqui')
       const q = {
         part: 'statistics,snippet',
         chart: 'mostPopular',
