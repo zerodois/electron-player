@@ -27,7 +27,7 @@
   <div class="logout no-select">
     <span
       @click="logout"
-      class="material-icons pointer text--primary">
+      class="material-icons pointer ghost">
       exit_to_app
     </span>
   </div>
