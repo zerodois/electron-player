@@ -53,6 +53,7 @@
                     v-for="(subroute, $index) in getArray(route)"
                     :key="$index"
                     :to="subroute.path"
+                    :class="{'no-icon': !subroute.icon}"
                     class="item">
                     <div class="icons">
                       <span class="material-icons"></span>
@@ -146,7 +147,7 @@ export default {
     playlists () {
       return this.lists.map(list => {
         return {
-          icon: 'album',
+          icon: '',
           title: list.snippet.title,
           path: `/playlists/${list.id}`
         }
@@ -176,6 +177,8 @@ export default {
     padding: .75rem 0
     font-size: 13px
     cursor: pointer
+    &.no-icon
+      grid-template-columns: 1.25fr 9fr
     > span
       overflow: hidden
       text-overflow: ellipsis
