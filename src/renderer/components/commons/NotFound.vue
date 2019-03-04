@@ -1,5 +1,5 @@
 <template>
-  <section class="flex-1 flex-center">
+  <section class="flex-1 flex-center not-found-container">
     <div class="text-center">
       <img :src="`static/images/cute/${icon}.svg`" alt="Ícone fofo">
       <div>Você ainda não sincronizou nenhuma música nesse dispositivo.</div>
@@ -26,6 +26,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.not-found-container
+  margin-top: 4rem
 img
   width: 40%
   margin: auto
