@@ -1,7 +1,7 @@
 <template>
   <section class="flex-1 flex-center">
     <div class="text-center">
-      <img :src="`/static/images/cute/${icon}.svg`" alt="Ícone fofo">
+      <img :src="`static/images/cute/${icon}.svg`" alt="Ícone fofo">
       <div>Você ainda não sincronizou nenhuma música nesse dispositivo.</div>
       <router-link
         to="/"
