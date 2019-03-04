@@ -1,9 +1,9 @@
 <template>
   <section class="login">
     <div class="cover">
-      <img src="/static/images/background.jpg" alt="background login">
+      <img src="static/images/background.jpg" alt="background login">
     </div>
-    <img src="/static/images/logo-white.svg" class="logo" alt="Player logo">
+    <img src="static/images/logo-white.svg" class="logo" alt="Player logo">
     <span class="logo-title text--white">Quark.</span>
     <span
       class="text--medium text--white title pointer"

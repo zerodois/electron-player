@@ -1,7 +1,7 @@
 <template>
   <section class="sidebar">
     <div class="logo">
-      <img src="/static/images/logo.svg" alt="">
+      <img src="static/images/logo.svg" alt="">
       <span>Quark.</span>
     </div>
     <nav class="scroll">
