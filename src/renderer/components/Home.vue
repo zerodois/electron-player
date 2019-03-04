@@ -4,7 +4,7 @@
       <sidebar />
       <div class="middle">
         <top />
-        <div class="scroll flex flex-column flex-1">
+        <div class="scroll">
           <router-view />
         </div>
       </div>

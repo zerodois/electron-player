@@ -9,6 +9,14 @@ export const search = q => {
   })
 }
 
+export const videos = q => {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('youtube:videos', q)
+    ipcRenderer.on('youtube:videos:response', (_, data) => resolve(data))
+    ipcRenderer.on('youtube:videos:error', (_, err) => reject(err))
+  })
+}
+
 export const put = (playlistId, videoId) => {
   return new Promise((resolve, reject) => {
     let token = store.getters['User/getToken']

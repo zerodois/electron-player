@@ -9,14 +9,15 @@ export default {
         .replace(/\//g, '_')
         .replace(/\?/g, '')
     },
-    imageCover (quality = 'default') {
-      if (!this.song) {
+    imageCover (quality = 'default', _song = null) {
+      const song = _song || this.song
+      if (!song) {
         return null
       }
-      if (!this.song.downloaded || this.song.downloaded < 0) {
-        return this.song.snippet.thumbnails.high.url
+      if (!song.downloaded || song.downloaded < 0) {
+        return song.snippet.thumbnails.high.url
       }
-      return `http://localhost:${PORT}/meta/${this.file(this.song, 'jpg')}`
+      return `http://localhost:${PORT}/meta/${this.file(song, 'jpg')}`
     }
   }
 }
