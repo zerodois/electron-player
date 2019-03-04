@@ -36,6 +36,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { revoke } from '../services/login'
 
 export default {
   name: 'Top',
@@ -53,7 +54,8 @@ export default {
       this.text = ''
       // this.$router.push('/')
     },
-    logout () {
+    async logout () {
+      await revoke()
       this.setToken(null)
       this.setPlaylists([])
       this.$router.replace('/login')

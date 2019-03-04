@@ -4,10 +4,10 @@ import { get as find } from '../../services/songs'
 import { promisify } from 'bluebird-lst'
 
 export const get = async (query) => {
-  oauth2Client.credentials = query.token
+  const auth = oauth2Client(query.token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     part: 'snippet',
     maxResults: 10,
     type: 'video'
@@ -24,10 +24,10 @@ export const get = async (query) => {
 }
 
 export const videos = async (q) => {
-  oauth2Client.credentials = q.token
+  const auth = oauth2Client(q.token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     part: 'snippet,contentDetails',
     maxResults: 10
   }
@@ -42,10 +42,10 @@ export const videos = async (q) => {
 }
 
 export const playlists = async (q) => {
-  oauth2Client.credentials = q.token
+  const auth = oauth2Client(q.token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     part: 'snippet,status',
     maxResults: 10
   }
@@ -55,10 +55,10 @@ export const playlists = async (q) => {
 }
 
 export const put = ({ playlistId, videoId, token }) => {
-  oauth2Client.credentials = token
+  const auth = oauth2Client(token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     part: 'snippet',
     resource: {
       snippet: {
@@ -76,10 +76,10 @@ export const put = ({ playlistId, videoId, token }) => {
 }
 
 export const remove = ({ id, token }) => {
-  oauth2Client.credentials = token
+  const auth = oauth2Client(token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     id
   }
   let fn = promisify(service.playlistItems.delete).bind(service)
@@ -92,10 +92,10 @@ export const remove = ({ id, token }) => {
 }
 
 export const playlistItems = async (q) => {
-  oauth2Client.credentials = q.token
+  const auth = oauth2Client(q.token)
   let service = google.youtube('v3')
   let config = {
-    auth: oauth2Client,
+    auth,
     part: 'snippet,contentDetails',
     maxResults: 50
   }

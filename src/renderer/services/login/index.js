@@ -17,6 +17,14 @@ export const decode = token => {
   })
 }
 
+export const revoke = () => {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('auth:revoke')
+    ipcRenderer.on('auth:revoke:response', (_, data) => resolve(data))
+    ipcRenderer.on('auth:revoke:error', (_, err) => reject(err))
+  })
+}
+
 export const auth = (url) => {
   let callbacks = { ok: _ => {}, err: _ => {} }
   const executeAuth = () => {
@@ -35,7 +43,7 @@ export const auth = (url) => {
         return callbacks.err()
       }
       if (/response=code%3D/.test(newUrl)) {
-        let response = /response=code%3D([\d]+)%2F([^&]+)/.exec(newUrl)
+        let response = /response=code%3D([\d]+)%2F([^&]+)%26scope/.exec(newUrl)
         callbacks.ok(`${response[1]}/${response[2]}`)
         authWindow.close()
       }
