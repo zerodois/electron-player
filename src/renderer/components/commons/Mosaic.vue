@@ -46,10 +46,10 @@ export default {
   grid-gap: 1.5rem .5rem
   .cover
     overflow: hidden
-    box-shadow: 0 0 5px 1px rgba(0, 0, 0, .3)
-    border-radius: 4px
-    height: 11rem
     position: relative
+    img
+      box-shadow: 0 0 5px 1px rgba(0, 0, 0, .3)
+      border-radius: 4px
     &:not(:hover) .hover
       opacity: 0
     .hover
