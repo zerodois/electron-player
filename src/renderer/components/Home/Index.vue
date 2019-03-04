@@ -4,7 +4,8 @@
       :square="false"
       v-if="videos.length"
       type="Destaque"
-      :item="videos[0]">
+      :item="videos[0]"
+      @play="play(videos[0])">
       <span class="view-count">
         <span class="views">
           {{ views }}
@@ -15,6 +16,7 @@
     <div>
       <div class="trends">Outros Destaques</div>
       <list-component
+        @play="play"
         :columns="4"
         :list="others" />
     </div>
@@ -26,7 +28,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Mosaic from '@/components/commons/Mosaic'
 import HeaderList from '@/components/commons/HeaderList'
 import { videos } from '@/services/youtube'
-import { to } from '@/utils'
+import { to, EventEmitter } from '@/utils'
 
 export default {
   name: 'HomePage',
@@ -36,13 +38,15 @@ export default {
   },
   methods: {
     ...mapActions('Trends', ['setList']),
+    play (item) {
+      EventEmitter.$emit('song:play', item)
+    },
     async load () {
       if (this.videos.length) {
         return
       }
-      alert('passou aqui')
       const q = {
-        part: 'statistics,snippet',
+        part: 'statistics,snippet,id',
         chart: 'mostPopular',
         regionCode: 'BR', // Região Brasil
         videoCategoryId: '10', // Categoria Música

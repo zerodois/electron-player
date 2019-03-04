@@ -89,7 +89,7 @@ export default {
         let file = this.file(item)
         return `http://localhost:${PORT}/songs/${file}`
       }
-      return `http://localhost:${PORT}/stream/${item.id.videoId}`
+      return `http://localhost:${PORT}/stream/${item.id.videoId || item.id}`
     },
     play (item) {
       this.source = this.getUrl(item)

@@ -9,7 +9,7 @@
       <small>Criada por <span class="text--primary">{{ item.snippet.channelTitle }}</span></small>
       <slot />
       <div>
-        <button class="btn btn--primary--flat">EXECUTAR</button>
+        <button @click="$emit('play')" class="btn btn--primary--flat">EXECUTAR</button>
       </div>
     </div>
   </header>
