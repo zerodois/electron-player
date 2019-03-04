@@ -1,29 +1,12 @@
-import { ipcRenderer, remote } from 'electron'
+import { remote } from 'electron'
+import { buildEvent } from '../../utils'
 const { BrowserWindow } = remote
 
-export const getUrl = () => {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.send('auth:make')
-    ipcRenderer.on('auth:make:response', (_, data) => resolve(data))
-    ipcRenderer.on('auth:make:error', (_, err) => reject(err))
-  })
-}
+export const getUrl = () => buildEvent('auth:make')
 
-export const decode = token => {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.send('auth:decode', token)
-    ipcRenderer.on('auth:decode:response', (_, data) => resolve(data))
-    ipcRenderer.on('auth:decode:error', (_, err) => reject(err))
-  })
-}
+export const decode = token => buildEvent('auth:decode', token)
 
-export const revoke = () => {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.send('auth:revoke')
-    ipcRenderer.on('auth:revoke:response', (_, data) => resolve(data))
-    ipcRenderer.on('auth:revoke:error', (_, err) => reject(err))
-  })
-}
+export const revoke = () => buildEvent('auth:revoke')
 
 export const auth = (url) => {
   let callbacks = { ok: _ => {}, err: _ => {} }

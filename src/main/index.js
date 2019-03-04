@@ -42,16 +42,23 @@ function createWindow () {
   mainWindow.setMenu(null)
 
   mainWindow.loadURL(winURL)
+  const sender = mainWindow.webContents
   for (let ev in events) {
     ipcMain.on(ev, (e, data) => {
-      console.log(`event`, ev, data)
-      let p = events[ev](data, e.sender)
-      if (p && typeof p.catch === 'function') {
-        p.catch(err => {
-          console.error(err)
-          e.sender.send(`${ev}:error`, err.message)
-        })
+      const error = (err) => {
+        console.error(err)
+        sender.send(`${ev}:error`, err.message)
       }
+      const timeout = setTimeout(() => error({ message: 'Timeout' }), 6000)
+      console.log(`event`, ev, data)
+      setTimeout(() => (
+        events[ev](data, sender)
+          .then(() => clearTimeout(timeout))
+          .catch(err => {
+            clearTimeout(timeout)
+            error(err)
+          })
+      ), 10)
     })
   }
 
