@@ -9,6 +9,7 @@
       <img class="cover" :src="imageCover('default', item)" :alt="`Cover do vídeo ${item.snippet.title}`">
       <div class="title" :class="{'ellipsis': ellipsis}">{{ item.snippet.title }}</div>
       <small>{{ item.snippet.channelTitle }}</small>
+      <slot></slot>
     </div>
   </section>
 </template>
