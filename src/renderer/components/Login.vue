@@ -32,7 +32,8 @@ export default {
     popup () {
       auth(this.url)
         .onSuccess(this.success)
-        .onError(_ => alert('DEU BOSTA (SO QUE BOM)'))
+        .onError(_ => alert('Erro ao tentar logar no Google'))
+        .do()
     },
     async success (code) {
       let [err, token] = await to(decode(code))

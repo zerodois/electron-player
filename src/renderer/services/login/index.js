@@ -19,30 +19,32 @@ export const decode = token => {
 
 export const auth = (url) => {
   let callbacks = { ok: _ => {}, err: _ => {} }
-  let authWindow = new BrowserWindow({
-    width: 650,
-    height: 750,
-    show: false,
-    'node-integration': false,
-    'web-security': false
-  })
-  authWindow.loadURL(url)
-  authWindow.show()
-  authWindow.webContents.on('will-navigate', (event, newUrl) => {
-    if (/response=error/i.test(newUrl)) {
-      authWindow.close()
-      return callbacks.err()
-    }
-    if (/response=code%3D/.test(newUrl)) {
-      authWindow.close()
-      let response = /response=code%3D([\d]+)%2F([^&]+)/.exec(newUrl)
-      callbacks.ok(`${response[1]}/${response[2]}`)
-    }
-  })
-  authWindow.on('closed', () => {
-    authWindow = null
-  })
-  let ret = {}
+  const executeAuth = () => {
+    let authWindow = new BrowserWindow({
+      width: 650,
+      height: 750,
+      show: false,
+      'node-integration': false,
+      'web-security': false
+    })
+    authWindow.loadURL(url)
+    authWindow.show()
+    authWindow.webContents.on('will-navigate', (event, newUrl) => {
+      if (/response=error/i.test(newUrl)) {
+        authWindow.close()
+        return callbacks.err()
+      }
+      if (/response=code%3D/.test(newUrl)) {
+        let response = /response=code%3D([\d]+)%2F([^&]+)/.exec(newUrl)
+        callbacks.ok(`${response[1]}/${response[2]}`)
+        authWindow.close()
+      }
+    })
+    authWindow.on('closed', () => {
+      authWindow = null
+    })
+  }
+  let ret = { do: executeAuth }
   ret.onSuccess = callback => {
     callbacks.ok = callback
     return ret

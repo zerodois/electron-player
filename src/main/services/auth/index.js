@@ -29,7 +29,6 @@ export const genAuthUrl = () => {
 
 export const decode = code => {
   return new Promise((resolve, reject) => {
-    console.log('MAS QUE CARALHO', code)
     oauth2Client.getToken(code, (err, token) => {
       if (err) {
         return reject(err)
