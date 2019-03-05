@@ -96,15 +96,15 @@ export default {
     sort (column) {
       const videos = this.playlist.videos.slice()
       const playlist = { ...this.playlist }
-      videos.sort((a, b) => {
-        const x = column.eval(a)
-        const y = column.eval(b)
-        return x < y ? -1 : x > y ? 1 : 0
-      })
       let asc = true
       if (playlist.order && playlist.order.type === column.title) {
         asc = !playlist.order.asc
       }
+      videos.sort((a, b) => {
+        const x = column.eval(a)
+        const y = column.eval(b)
+        return x < y ? (-1 + (2 * asc)) : x > y ? (1 - (2 * asc)) : 0
+      })
       playlist.order = { type: column.title, asc }
       this.updateList({ ...playlist, videos })
     },

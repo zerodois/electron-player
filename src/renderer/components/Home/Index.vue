@@ -107,7 +107,6 @@ export default {
       img
         width: 100%
         height: auto
-        border-radius: 4px
     .title
       font-size: 2rem
 </style>

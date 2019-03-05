@@ -47,6 +47,7 @@ header
     padding: 1rem
   .cover
     img
+      border-radius: 4px
       box-shadow: 0 0 10px 0 #ccc
       height: $photo
       object-fit: cover
