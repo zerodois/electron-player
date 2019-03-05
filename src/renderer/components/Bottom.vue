@@ -34,6 +34,7 @@
           class="pointer material-icons">{{ repeat === 2 ? 'repeat_one' : 'repeat' }}</span>
       </div>
       <div
+        @click="seek"
         @mousedown="active('progress-song', 'seek')"
         @mouseup="mouseOut('seek', 'progress-song')"
         @mouseout="mouseOut('seek', 'progress-song')"
@@ -48,9 +49,10 @@
         <span>{{ format(duration) }}</span>
       </div>
     </div>
-    <div class="right flex-center">
-      <span class="material-icons">volume_up</span>
+    <div class="right flex-center no-select">
+      <span class="material-icons">{{ volumeIcon }}</span>
       <div
+        @click="volumeControl"
         @mousedown="active('progress-audio', 'volumeControl')"
         @mouseup="mouseOut('volumeControl', 'progress-audio')"
         @mouseout="mouseOut('volumeControl', 'progress-audio')"
@@ -202,6 +204,19 @@ export default {
         return 0
       }
       return parseFloat((this.time / this.duration) * 100).toFixed(2)
+    },
+    volumeIcon () {
+      const vol = this.config.volume
+      if (!vol) {
+        return 'volume_off'
+      }
+      if (vol < 0.2) {
+        return 'volume_mute'
+      }
+      if (vol < 0.7) {
+        return 'volume_down'
+      }
+      return 'volume_up'
     }
   },
   created () {
