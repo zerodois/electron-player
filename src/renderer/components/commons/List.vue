@@ -64,7 +64,7 @@
       <tbody>
         <tr
           v-for="(item, $index) in list"
-          :key="item.contentDetails.videoId"
+          :key="item.id.videoId"
           tabindex="0"
           @blur="selected = null"
           @contextmenu.prevent="open({ item, index: $index })"

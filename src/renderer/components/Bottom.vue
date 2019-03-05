@@ -34,22 +34,41 @@
           class="pointer material-icons">{{ repeat === 2 ? 'repeat_one' : 'repeat' }}</span>
       </div>
       <div
-        @click="seek"
-        class="container pointer">
+        @mousedown="active('progress-song', 'seek')"
+        @mouseup="mouseOut('seek', 'progress-song')"
+        @mouseout="mouseOut('seek', 'progress-song')"
+        class="container container-progress pointer no-select">
         <span>{{ format(time) }}</span>
         <div class="progress">
           <div
+            ref="progress-song"
             class="bar"
             :style="`width: ${percent}%;`"></div>
         </div>
         <span>{{ format(duration) }}</span>
       </div>
     </div>
-    <div class="right"></div>
+    <div class="right flex-center">
+      <span class="material-icons">volume_up</span>
+      <div
+        @mousedown="active('progress-audio', 'volumeControl')"
+        @mouseup="mouseOut('volumeControl', 'progress-audio')"
+        @mouseout="mouseOut('volumeControl', 'progress-audio')"
+        class="container-progress pointer no-select active"
+        style="flex: .5">
+        <div class="progress">
+          <div
+            ref="progress-audio"
+            class="bar"
+            :style="`width: ${config.volume * 100}%;`"></div>
+        </div>
+      </div>
+    </div>
     <audio
       @durationchange="ev => duration = ev.target.duration"
       @timeupdate="ev => time = ev.target.currentTime"
       @ended="end()"
+      :volume="config.volume"
       ref="audio">
       <source
         :src="source"
@@ -83,7 +102,10 @@ export default {
       'setRepeat',
       'setShuffle'
     ]),
-    ...mapActions('Config', { setCover: 'setCoverExpanded' }),
+    ...mapActions('Config', {
+      setCover: 'setCoverExpanded',
+      setVolume: 'setVolume'
+    }),
     getUrl (item) {
       if (item.downloaded > 0) {
         let file = this.file(item)
@@ -144,8 +166,23 @@ export default {
       }
       this.$refs.audio.pause()
     },
+    active (ref, fn) {
+      const $ref = this.$refs[ref]
+      $ref.addEventListener('mousemove', this[fn])
+    },
+    mouseOut (fn, ref) {
+      const $ref = this.$refs[ref]
+      $ref.removeEventListener('mousemove', this[fn])
+    },
+    volumeControl (ev) {
+      const $ref = this.$refs['progress-audio'].parentNode
+      const perc = Math.min(1, Math.max(0, ev.offsetX / $ref.offsetWidth))
+      this.setVolume(perc)
+      this.$refs.audio.volume = perc
+    },
     seek (ev) {
-      let seekTo = Math.round((ev.offsetX / ev.target.offsetWidth) * this.duration)
+      const $ref = this.$refs['progress-song'].parentNode
+      let seekTo = Math.round((ev.offsetX / $ref.offsetWidth) * this.duration)
       this.$refs.audio.currentTime = seekTo
     }
   },
@@ -184,6 +221,7 @@ audio
   width: 0
 .container
   width: $progress-size
+.container-progress
   height: 1rem
   display: flex
   align-items: center
@@ -191,6 +229,7 @@ audio
     font-size: .8rem
     margin: 0 .5rem
   .progress
+    margin: 0 .5rem
     &, & .bar
       border-radius: 50px
     width: 100%
@@ -214,7 +253,7 @@ audio
         right: 0
         top: 50%
         transform: translateY(-50%) translateX(50%)
-  &:hover
+  &:hover, &.active
     .bar
       background: $primary
       &:after
