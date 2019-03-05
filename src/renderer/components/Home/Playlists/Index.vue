@@ -164,6 +164,8 @@ export default {
   .right
     margin: 0 1rem
     width: 2rem
+header
+  margin-left: 2rem
 .loading-content
   padding-top: 10vh
   text-align: center
