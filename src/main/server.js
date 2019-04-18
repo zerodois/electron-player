@@ -9,16 +9,25 @@ const app = express()
 app.get('/stream/:videoId', (req, res) => {
   let url = `https://www.youtube.com/watch?v=${req.params.videoId}`
   try {
-    const [, start] = /^bytes=(\d+)-/i.test(get(req, 'headers.range', def))
-    const stream = createStream(url, Number(start))
-    const def = 'bytes=0'
-    stream.pipe(res)
+    const def = 'bytes=0-'
+    console.log('RANGE', req.headers.range)
+    const [start, rest] = get(req, 'headers.range', def)
+      .replace(/^bytes=/i, '')
+      .split('-')
+      .map(n => parseInt(n, 10))
+    const stream = createStream(url, start)
     stream.on('info', data => {
-      res.header('Content-Length', data.size)
+      const total = data.size + start
+      const end = rest || (total - 1)
+      res.status(206)
+      res.header('Content-Range', `bytes ${start}-${end}/${total}`)
       res.header('Accept-Ranges', 'bytes')
+      res.header('Content-Length', data.size)
+      stream.pipe(res)
     })
   } catch (exception) {
-    res.status(500).send(exception)
+    console.error(exception)
+    res.status(500).send({ error: exception.message })
   }
 })
 
