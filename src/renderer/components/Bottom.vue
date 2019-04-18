@@ -185,6 +185,8 @@ export default {
     seek (ev) {
       const $ref = this.$refs['progress-song'].parentNode
       let seekTo = Math.round((ev.offsetX / $ref.offsetWidth) * this.duration)
+      if (!this.song.downloaded) {
+      }
       this.$refs.audio.currentTime = seekTo
     }
   },
