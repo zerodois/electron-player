@@ -9,6 +9,7 @@ app.get('/stream/:videoId', (req, res) => {
   let url = `https://www.youtube.com/watch?v=${req.params.videoId}`
   try {
     const stream = createStream(url)
+    console.log('STREAM', req.headers.range)
     stream.on('info', data => {
       res.header('Content-Length', data.size)
       res.header('Accept-Ranges', 'bytes')

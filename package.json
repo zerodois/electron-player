@@ -65,6 +65,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "google-auth-library": "^1.6.1",
     "googleapis": "^32.0.0",
+    "lodash": "^4.17.11",
     "material-icons": "^0.2.3",
     "moment": "^2.22.2",
     "nedb": "^1.8.0",
