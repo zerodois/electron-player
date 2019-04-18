@@ -8,6 +8,7 @@ const app = express()
 app.get('/stream/:videoId', (req, res) => {
   let url = `https://www.youtube.com/watch?v=${req.params.videoId}`
   try {
+    res.header('Accept-Ranges', 'bytes')
     stream(url).pipe(res)
   } catch (exception) {
     res.status(500).send(exception)
