@@ -35,9 +35,7 @@
       </div>
       <div
         @click="seek"
-        @mousedown="active('progress-song', 'seek')"
-        @mouseup="mouseOut('seek', 'progress-song')"
-        @mouseout="mouseOut('seek', 'progress-song')"
+        @mousedown="active('fakeSeek')"
         class="container container-progress pointer no-select">
         <span>{{ format(time) }}</span>
         <div class="progress">
@@ -168,13 +166,16 @@ export default {
       }
       this.$refs.audio.pause()
     },
-    active (ref, fn) {
-      const $ref = this.$refs[ref]
-      $ref.addEventListener('mousemove', this[fn])
+    active (fn) {
+      document.addEventListener('mousemove', this[fn])
+      const remove = ev => {
+        document.removeEventListener('mousemove', this[fn])
+        document.removeEventListener('mouseup', remove)
+      }
+      document.addEventListener('mouseup', remove)
     },
     mouseOut (fn, ref) {
-      const $ref = this.$refs[ref]
-      $ref.removeEventListener('mousemove', this[fn])
+      document.removeEventListener('mousemove', this[fn])
     },
     volumeControl (ev) {
       const $ref = this.$refs['progress-audio'].parentNode
@@ -182,10 +183,18 @@ export default {
       this.setVolume(perc)
       this.$refs.audio.volume = perc
     },
-    seek (ev) {
+    fakeSeek (ev) {
+      this.seek(ev, true)
+    },
+    seek (ev, silent = false) {
       const $ref = this.$refs['progress-song'].parentNode
-      let seekTo = Math.round((ev.offsetX / $ref.offsetWidth) * this.duration)
-      this.$refs.audio.currentTime = seekTo
+      const offset = Math.max(0, ev.clientX - Math.floor($ref.getBoundingClientRect().left))
+      console.log('OFF', ev)
+      let seekTo = Math.round((offset / $ref.offsetWidth) * this.duration)
+      if (!silent) {
+        this.$refs.audio.currentTime = seekTo
+      }
+      this.time = seekTo
     }
   },
   computed: {
