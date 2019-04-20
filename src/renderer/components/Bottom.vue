@@ -226,6 +226,9 @@ export default {
       return 'volume_up'
     }
   },
+  mounted () {
+    this.$refs.audio.volume = this.config.volume
+  },
   created () {
     EventEmitter.$on('song:play', this.play)
     ipcRenderer.on('keyboard:next', _ => this.next())
