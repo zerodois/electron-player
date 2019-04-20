@@ -51,9 +51,7 @@
       <span class="material-icons">{{ volumeIcon }}</span>
       <div
         @click="volumeControl"
-        @mousedown="active('progress-audio', 'volumeControl')"
-        @mouseup="mouseOut('volumeControl', 'progress-audio')"
-        @mouseout="mouseOut('volumeControl', 'progress-audio')"
+        @mousedown="active('volumeControl')"
         class="container-progress pointer no-select active"
         style="flex: .5">
         <div class="progress">
