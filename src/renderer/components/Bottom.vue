@@ -51,9 +51,7 @@
       <span class="material-icons">{{ volumeIcon }}</span>
       <div
         @click="volumeControl"
-        @mousedown="active('progress-audio', 'volumeControl')"
-        @mouseup="mouseOut('volumeControl', 'progress-audio')"
-        @mouseout="mouseOut('volumeControl', 'progress-audio')"
+        @mousedown="active('volumeControl')"
         class="container-progress pointer no-select active"
         style="flex: .5">
         <div class="progress">
@@ -82,6 +80,7 @@ import { PORT } from '../../share'
 import { EventEmitter } from '@/utils'
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'
+import { play } from '../services/songs'
 import mixin from '@/mixins'
 
 export default {
@@ -114,6 +113,7 @@ export default {
       return `http://localhost:${PORT}/stream/${item.id.videoId || item.id}`
     },
     play (item) {
+      play(item)
       this.source = this.getUrl(item)
       if (this.queue !== this.list) {
         this.setQueue(this.list)
@@ -227,6 +227,9 @@ export default {
       }
       return 'volume_up'
     }
+  },
+  mounted () {
+    this.$refs.audio.volume = this.config.volume
   },
   created () {
     EventEmitter.$on('song:play', this.play)
