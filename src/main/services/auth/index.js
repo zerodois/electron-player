@@ -39,7 +39,5 @@ client.on('tokens', (tokens) => {
     client.setCredentials({
       refresh_token: `STORED_REFRESH_TOKEN`
     })
-    console.log(tokens.refresh_token)
   }
-  console.log('OK ::::::', tokens)
 })
