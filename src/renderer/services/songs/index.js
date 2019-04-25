@@ -15,3 +15,11 @@ export const play = (song) => {
     ipcRenderer.on('songs:play:error', (_, err) => reject(err))
   })
 }
+
+export const updateStatus = (running) => {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('songs:status', running)
+    ipcRenderer.on('songs:status:response', (_, data) => resolve(data))
+    ipcRenderer.on('songs:status:error', (_, err) => reject(err))
+  })
+}

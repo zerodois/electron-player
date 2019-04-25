@@ -53,6 +53,14 @@ export const load = (window) => {
 }
 
 /**
+ * Update running status
+ * @param {Boolean} running
+ */
+export const status = (running) => {
+  player.playbackStatus = running ? 'Playing' : 'Paused'
+}
+
+/**
  * Update system info
  * @param {object} track
  * @param {object} track.snippet

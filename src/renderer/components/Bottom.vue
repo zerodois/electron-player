@@ -80,7 +80,7 @@ import { PORT } from '../../share'
 import { EventEmitter } from '@/utils'
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { play } from '../services/songs'
+import { play, updateStatus } from '../services/songs'
 import mixin from '@/mixins'
 
 export default {
@@ -160,6 +160,7 @@ export default {
       return index < 0 ? this.queue.length - 1 : index
     },
     action () {
+      updateStatus(!this.running)
       this.setRunning(!this.running)
       if (this.running) {
         return this.$refs.audio.play()
