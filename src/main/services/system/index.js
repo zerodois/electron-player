@@ -15,9 +15,41 @@ const player = mpris({
 /**
  * Load configs to mpris
  */
-export const load = () => {
+export const load = (window) => {
   player.canEditTracks = false
   player.playbackStatus = 'Stopped'
+
+  player.on('playpause', () => {
+    window.webContents.send('keyboard:playpause')
+    if (player.playbackStatus === 'Playing') {
+      player.playbackStatus = 'Paused'
+      return
+    }
+    player.playbackStatus = 'Playing'
+  })
+
+  player.on('play', () => {
+    window.webContents.send('keyboard:playpause')
+    player.playbackStatus = 'Playing'
+  })
+
+  player.on('pause', () => {
+    window.webContents.send('keyboard:playpause')
+    player.playbackStatus = 'Paused'
+  })
+
+  player.on('next', () => {
+    window.webContents.send('keyboard:next')
+  })
+
+  player.on('previous', () => {
+    window.webContents.send('keyboard:prev')
+  })
+
+  player.on('stop', () => {
+    window.webContents.send('keyboard:playpause')
+    player.playbackStatus = 'Stopped'
+  })
 }
 
 /**
@@ -37,7 +69,6 @@ export const update = ({ snippet, contentDetails }) => {
     'xesam:album': 'Sem álbum',
     'xesam:artist': [snippet.channelTitle]
   }
-  console.log('METADATA', metadata)
   player.playbackStatus = 'Playing'
   player.canPlay = true
   player.canPause = true

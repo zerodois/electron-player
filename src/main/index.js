@@ -44,7 +44,7 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
   const sender = mainWindow.webContents
-  load()
+  load(mainWindow)
 
   const eventFactory = ev => (e, data) => {
     const error = (err) => {
