@@ -4,6 +4,7 @@ import events from './events'
 import fs from 'fs'
 import path from 'path'
 import './server'
+import { load } from './services/system'
 
 /**
  * Set `__static` path to static files in production
@@ -43,23 +44,27 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
   const sender = mainWindow.webContents
+  load()
+
+  const eventFactory = ev => (e, data) => {
+    const error = (err) => {
+      console.error(err)
+      sender.send(`${ev}:error`, err.message)
+    }
+    const timeout = setTimeout(() => error({ message: 'Timeout' }), 6000)
+    console.log(`event`, ev, data)
+    setTimeout(() => (
+      events[ev](data, sender)
+        .then(() => clearTimeout(timeout))
+        .catch(err => {
+          clearTimeout(timeout)
+          error(err)
+        })
+    ), 10)
+  }
+
   for (let ev in events) {
-    ipcMain.on(ev, (e, data) => {
-      const error = (err) => {
-        console.error(err)
-        sender.send(`${ev}:error`, err.message)
-      }
-      const timeout = setTimeout(() => error({ message: 'Timeout' }), 6000)
-      console.log(`event`, ev, data)
-      setTimeout(() => (
-        events[ev](data, sender)
-          .then(() => clearTimeout(timeout))
-          .catch(err => {
-            clearTimeout(timeout)
-            error(err)
-          })
-      ), 10)
-    })
+    ipcMain.on(ev, eventFactory(ev))
   }
 
   globalShortcut.register('MediaNextTrack', _ => mainWindow.webContents.send('keyboard:next'))
