@@ -31,5 +31,5 @@ app.get('/stream/:videoId', (req, res) => {
   }
 })
 
-app.use(express.static(resolve('.', 'storage')))
+app.use(express.static(resolve(__static, 'storage')))
 app.listen(PORT, _ => console.log(`Server running in :${PORT}`))

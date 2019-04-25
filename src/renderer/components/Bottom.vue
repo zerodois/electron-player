@@ -80,6 +80,7 @@ import { PORT } from '../../share'
 import { EventEmitter } from '@/utils'
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'
+import { play, updateStatus } from '../services/songs'
 import mixin from '@/mixins'
 
 export default {
@@ -112,6 +113,7 @@ export default {
       return `http://localhost:${PORT}/stream/${item.id.videoId || item.id}`
     },
     play (item) {
+      play(item)
       this.source = this.getUrl(item)
       if (this.queue !== this.list) {
         this.setQueue(this.list)
@@ -158,6 +160,7 @@ export default {
       return index < 0 ? this.queue.length - 1 : index
     },
     action () {
+      updateStatus(!this.running)
       this.setRunning(!this.running)
       if (this.running) {
         return this.$refs.audio.play()

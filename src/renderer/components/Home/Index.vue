@@ -46,7 +46,7 @@ export default {
         return
       }
       const q = {
-        part: 'statistics,snippet,id',
+        part: 'statistics,snippet,id,contentDetails',
         chart: 'mostPopular',
         regionCode: 'BR', // Região Brasil
         videoCategoryId: '10', // Categoria Música
