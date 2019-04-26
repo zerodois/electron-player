@@ -3,7 +3,6 @@ import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import events from './events'
 import fs from 'fs'
 import path from 'path'
-import './server'
 import { load } from './services/system'
 
 /**
@@ -13,6 +12,8 @@ import { load } from './services/system'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
+
+require('./server')
 
 let storage = path.resolve(__static, 'storage')
 if (!fs.existsSync(storage)) {
