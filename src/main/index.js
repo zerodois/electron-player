@@ -2,7 +2,8 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import events from './events'
 import fs from 'fs'
-import path from 'path'
+import { resolve } from 'path'
+import { path } from './utils'
 import { load } from './services/system'
 
 /**
@@ -15,14 +16,14 @@ if (process.env.NODE_ENV !== 'development') {
 
 require('./server')
 
-let storage = path.resolve(__static, 'storage')
+let storage = resolve(path, 'storage')
 if (!fs.existsSync(storage)) {
   fs.mkdirSync(storage)
-  fs.mkdirSync(path.resolve(__static, 'storage', 'songs'))
-  fs.mkdirSync(path.resolve(__static, 'storage', 'meta'))
+  fs.mkdirSync(resolve(path, 'storage', 'songs'))
+  fs.mkdirSync(resolve(path, 'storage', 'meta'))
 }
 
-let store = path.resolve('.', 'store')
+let store = resolve(path, 'store')
 if (!fs.existsSync(store)) {
   fs.mkdirSync(store)
 }

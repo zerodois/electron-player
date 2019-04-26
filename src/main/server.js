@@ -2,6 +2,7 @@ import express from 'express'
 import createStream from './utils/stream'
 import { resolve } from 'path'
 import { PORT } from '../share'
+import { path } from './utils'
 import { get } from 'lodash'
 
 const app = express()
@@ -31,5 +32,5 @@ app.get('/stream/:videoId', (req, res) => {
   }
 })
 
-app.use(express.static(resolve(__static, 'storage')))
+app.use(express.static(resolve(path, 'storage')))
 app.listen(PORT, _ => console.log(`Server running in :${PORT}`))
