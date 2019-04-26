@@ -1,7 +1,7 @@
 import youtubedl from 'youtube-dl'
 
 export default (url, start) => {
-  const video = youtubedl(url, ['--format=18'], { start, cwd: __dirname })
+  const video = youtubedl(url, ['--format=18'], { start, cwd: '.' })
   video.on('info', info => {
     console.log('Download started')
     console.log('filename: ' + info._filename)
