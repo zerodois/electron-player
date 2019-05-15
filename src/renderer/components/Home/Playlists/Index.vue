@@ -94,19 +94,22 @@ export default {
       return arr
     },
     sort (column) {
-      const videos = this.playlist.videos.slice()
       const playlist = { ...this.playlist }
       let asc = true
       if (playlist.order && playlist.order.type === column.title) {
         asc = !playlist.order.asc
       }
-      videos.sort((a, b) => {
+      const videos = this.doSort(this.playlist.videos.slice(), column, asc)
+      playlist.order = { type: column.title, asc }
+      this.updateList({ ...playlist, videos })
+    },
+    doSort (array, column, asc) {
+      array.sort((a, b) => {
         const x = column.eval(a)
         const y = column.eval(b)
         return x < y ? (-1 + (2 * asc)) : x > y ? (1 - (2 * asc)) : 0
       })
-      playlist.order = { type: column.title, asc }
-      this.updateList({ ...playlist, videos })
+      return array
     },
     doDownload () {
       this.updateList({
@@ -134,6 +137,10 @@ export default {
         console.error(err)
         return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
       }
+      if (this.order) {
+        this.setList(this.doSort(data, this.order, this.playlist.order.asc))
+        return
+      }
       this.setList(data)
     }
   },
@@ -146,6 +153,12 @@ export default {
     }),
     playlist () {
       return this.playlists.find(it => it.id === this.$route.params.id) || {}
+    },
+    order () {
+      if (!this.playlist.order) {
+        return null
+      }
+      return this.fields.find((field) => field.title === this.playlist.order.type)
     }
   },
   async created () {

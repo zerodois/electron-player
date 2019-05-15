@@ -289,8 +289,8 @@ export default {
     td
       padding: .5rem 0
       &:last-child
-        min-width: 8rem
-        padding-right: .5rem
+        min-width: 9rem
+        padding: 0 .5rem
       > *
         vertical-align: middle
     td.min
