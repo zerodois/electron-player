@@ -98,8 +98,10 @@
             v-for="(field, $index) in fields"
             :key="$index"
             :class="{'last': $index === fields.length - 1}"
-            class="default">
-            {{ evaluate(item, field) }}
+            class="default title">
+            <span class="overflow-text">
+              {{ evaluate(item, field) }}
+            </span>
           </td>
           <!-- <td>
             <button
@@ -287,14 +289,21 @@ export default {
     &, span.icon
       transition: all .2s ease-in
     td
-      padding: .5rem 0
+      padding: .5rem .25rem
+      &.title
+        max-width: 40vw
+      > .overflow-text
+        display: block
+        white-space: nowrap
+        text-overflow: ellipsis
+        overflow: hidden
       &:last-child
         min-width: 9rem
-        padding: 0 .5rem
       > *
         vertical-align: middle
     td.min
       padding-left: .25rem
+      padding-right: .25rem
       width: calc(#{$play} + .5rem)
     &:not(:hover):not(.active):not(.downloaded)
       .play
