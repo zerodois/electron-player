@@ -8,19 +8,17 @@ export const get = async (query) => {
   let service = google.youtube('v3')
   let config = {
     auth,
-    part: 'snippet',
+    part: 'id',
     maxResults: 10,
     type: 'video'
   }
   Object.assign(config, query)
   let fn = promisify(service.search.list).bind(service)
-  let response = await fn(config)
-  let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
-  response.data.items = response.data.items.map(item => {
-    item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0
-    return item
-  })
-  return response.data
+  let { data } = await fn(config)
+  const ids = data.items.map(item => item.id.videoId).join(',')
+  const response = await videos({ auth, id: ids })
+  data.items = response.items
+  return data
 }
 
 export const videos = async (q) => {
