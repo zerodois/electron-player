@@ -3,9 +3,9 @@ import store from '@/store'
 
 export const search = q => {
   return new Promise((resolve, reject) => {
-    ipcRenderer.send('youtube:get', q)
-    ipcRenderer.on('youtube:get:response', (_, data) => resolve(data))
-    ipcRenderer.on('youtube:get:error', (_, err) => reject(err))
+    ipcRenderer.send('youtube:search', q)
+    ipcRenderer.on('youtube:search:response', (_, data) => resolve(data))
+    ipcRenderer.on('youtube:search:error', (_, err) => reject(err))
   })
 }
 

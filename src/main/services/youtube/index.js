@@ -3,19 +3,38 @@ import { oauth2Client } from '../auth'
 import { get as find } from '../../services/songs'
 import { promisify } from 'bluebird-lst'
 
-export const get = async (query) => {
+export const search = async (query) => {
+  const promises = [
+    get({ ...query, videoCategoryId: 10 }),
+    get({ ...query, maxResults: 5 }, 'playlist')
+  ]
+  const [videos, playlists] = await Promise.all(promises)
+  let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
+  videos.items = videos.items.map(item => {
+    item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0
+    return item
+  })
+  return {
+    videos,
+    playlists
+  }
+}
+
+export const get = async (query, type = 'video') => {
   const auth = oauth2Client(query.token)
   let service = google.youtube('v3')
   let config = {
     auth,
+    type,
     part: 'snippet',
-    type: 'video',
-    maxResults: 30,
-    videoCategoryId: 10
+    maxResults: 10
   }
   Object.assign(config, query)
   let fn = promisify(service.search.list).bind(service)
   let response = await fn(config)
+  if (type !== 'video') {
+    return response.data
+  }
   let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
   response.data.items = response.data.items.map(item => {
     item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0

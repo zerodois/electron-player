@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column">
+  <div class="flex flex-column card" :class="{'card--extended': extended}">
     <div class="cover">
       <img
         :src="imageCover('default', item)"
@@ -8,9 +8,11 @@
         <span @click="$emit('play', item)" class="material-icons pointer">play_arrow</span>
       </div>
     </div>
-    <div class="title" :class="{'ellipsis': ellipsis}">{{ item.snippet.title }}</div>
-    <small>{{ item.snippet.channelTitle }}</small>
-    <slot></slot>
+    <div class="card__content">
+      <div class="title" :class="{'ellipsis': ellipsis}">{{ item.snippet.title }}</div>
+      <small>{{ item.snippet.channelTitle }}</small>
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -21,16 +23,28 @@ export default {
   mixins: [mixin],
   props: {
     item: Object,
-    ellipsis: Boolean
+    ellipsis: Boolean,
+    extended: Boolean,
+    description: Boolean
   }
 }
 </script>
 
 <style lang="sass" scoped>
+.card
+  &--extended
+    // box-shadow: 0 0 10px 0 #999
+    // background: tomato
+    border-radius: 4px
+    padding-right: .5rem
+    display: grid
+    grid-template-columns: 50% 50%
+    grid-column-gap: .5rem
 .cover
   overflow: hidden
   position: relative
   img
+    display: block
     box-shadow: 0 0 5px 1px rgba(0, 0, 0, .3)
     border-radius: 4px
   &:not(:hover) .hover

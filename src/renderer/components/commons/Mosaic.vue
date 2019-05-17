@@ -8,6 +8,7 @@
         v-for="item in list"
         :key="item.id"
         :item="item"
+        :extended="extended"
         :ellipsis="ellipsis"
         @play="$emit('play', item)"
         class="grid--item flex flex-column">
@@ -23,6 +24,7 @@ export default {
   name: 'Mosaic',
   props: {
     list: Array,
+    extended: Boolean,
     title: {
       type: String,
       default: null
@@ -30,6 +32,10 @@ export default {
     ellipsis: {
       type: Boolean,
       default: true
+    },
+    description: {
+      type: Boolean,
+      default: false
     },
     columns: {
       type: Number,

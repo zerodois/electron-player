@@ -3,13 +3,12 @@
     <grid-component
       v-if="playlists.length"
       title="Playlists"
-      :ellipsis="true"
-      :columns="5"
+      :extended="true"
+      :columns="3"
       :list="playlists" />
     <grid-component
       v-if="videos.length"
       title="Músicas"
-      :ellipsis="true"
       :columns="5"
       :list="videos" />
     <!-- <list-component
@@ -26,7 +25,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
+import { search } from '../../services/youtube'
 import ListComponent from '@/components/commons/List'
 import GridComponent from '@/components/commons/Mosaic'
 
@@ -39,34 +39,31 @@ export default {
   watch: {
     '$route.query.q': 'doSearch'
   },
+  data () {
+    return {
+      videos: [],
+      playlists: []
+    }
+  },
   methods: {
     ...mapActions('Search', ['nextPage', 'do']),
     doSearch () {
       const q = this.$route.query.q
-      this.do({ q })
+      search({ q })
+        .then(this.complete)
+    },
+    complete ({ videos = [], playlists = [] }) {
+      this.videos = videos.items.map(video => ({
+        ...video,
+        id: video.id.videoId
+      }))
+      this.playlists = playlists.items.map(playlist => ({
+        ...playlist,
+        id: playlist.id.playlistId
+      }))
     }
   },
   computed: {
-    ...mapGetters('List', {
-      list: 'get'
-    }),
-    ...mapGetters('Search', {
-      search: 'get'
-    }),
-    videos () {
-      return this.list
-        .filter(item => item.id.kind === 'youtube#video')
-        .map(item => ({
-          ...item,
-          id: item.id.videoId
-        }))
-    },
-    playlists () {
-      return this.list.filter(item => item.id.kind === 'youtube#playlist')
-    },
-    channels () {
-      return this.list.filter(item => item.id.kind === 'youtube#channel')
-    }
   },
   mounted () {
     this.doSearch()
@@ -79,6 +76,7 @@ export default {
   flex: 1
   overflow: auto
   padding: 1rem
+  & /deep/ .grid
   .more
     margin-top: 2rem
 </style>
