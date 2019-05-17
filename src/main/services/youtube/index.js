@@ -8,16 +8,20 @@ export const get = async (query) => {
   let service = google.youtube('v3')
   let config = {
     auth,
-    part: 'id',
-    maxResults: 30
+    part: 'snippet',
+    type: 'video',
+    maxResults: 30,
+    videoCategoryId: 10
   }
   Object.assign(config, query)
   let fn = promisify(service.search.list).bind(service)
-  let { data } = await fn(config)
-  const ids = data.items.map(item => item.id.videoId).join(',')
-  const response = await videos({ auth, id: ids })
-  data.items = response.items
-  return data
+  let response = await fn(config)
+  let songs = (await find({}, { id: 1 })).map(it => it.id.videoId)
+  response.data.items = response.data.items.map(item => {
+    item.downloaded = songs.indexOf(item.id.videoId) > -1 ? 1 : 0
+    return item
+  })
+  return response.data
 }
 
 export const videos = async (q) => {
@@ -82,10 +86,6 @@ export const remove = ({ id, token }) => {
   let fn = promisify(service.playlistItems.delete).bind(service)
   return fn(config)
     .then(r => r.data)
-    .then(d => {
-      console.log('REPOSTA --------->', JSON.stringify(d, null, 2))
-      return d
-    })
 }
 
 export const playlistItems = async (q) => {

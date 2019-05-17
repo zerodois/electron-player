@@ -14,9 +14,9 @@
       </span>
     </header-list>
     <div>
-      <div class="trends">Outros Destaques</div>
       <list-component
         @play="play"
+        title="Outros Destaques"
         :columns="4"
         :list="others" />
     </div>
@@ -49,6 +49,7 @@ export default {
         part: 'statistics,snippet,id,contentDetails',
         chart: 'mostPopular',
         regionCode: 'BR', // Região Brasil
+        type: 'video',
         videoCategoryId: '10', // Categoria Música
         token: this.token,
         maxResults: 17
@@ -97,10 +98,6 @@ export default {
     margin-top: .5rem
     .views
       color: $primary
-  .trends
-    font-weight: 500
-    text-transform: uppercase
-    margin: 2rem 0 1rem
   & /deep/ header
     .cover
       width: 40%
