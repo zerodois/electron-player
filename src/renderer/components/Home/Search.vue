@@ -22,8 +22,15 @@ export default {
   components: {
     ListComponent
   },
+  watch: {
+    '$route.query.q': 'doSearch'
+  },
   methods: {
-    ...mapActions('Search', ['nextPage'])
+    ...mapActions('Search', ['nextPage', 'do']),
+    doSearch () {
+      const q = this.$route.query.q
+      this.do({ q })
+    }
   },
   computed: {
     ...mapGetters('List', {
@@ -32,6 +39,9 @@ export default {
     ...mapGetters('Search', {
       search: 'get'
     })
+  },
+  mounted () {
+    this.doSearch()
   }
 }
 </script>

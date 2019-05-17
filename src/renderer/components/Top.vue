@@ -47,7 +47,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Search', ['do']),
     ...mapActions('User', ['setToken']),
     ...mapActions('Playlist', ['setPlaylists']),
     reset () {
@@ -64,9 +63,8 @@ export default {
       if (!q) {
         return
       }
-      this.do({ q })
-        .then(_ => this.$router.push('/search'))
-        .catch(console.error)
+      const query = { q }
+      this.$router.push({ path: '/search', query })
     }
   }
 }

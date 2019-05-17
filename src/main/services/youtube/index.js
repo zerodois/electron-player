@@ -9,8 +9,7 @@ export const get = async (query) => {
   let config = {
     auth,
     part: 'id',
-    maxResults: 10,
-    type: 'video'
+    maxResults: 30
   }
   Object.assign(config, query)
   let fn = promisify(service.search.list).bind(service)
