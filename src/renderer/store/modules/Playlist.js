@@ -6,6 +6,7 @@ const actions = {
   setPlaylists: ({ commit }, payload) => commit('SET_PLAYLISTS', payload),
   updateList: ({ commit, getters }, playlist) => {
     let index = getters.get.findIndex(item => item.id === playlist.id)
+    if (index < 0) return
     // console.log('commt ---->', index)
     commit('UPDATE_PLAYLISTS', { index, playlist })
   },

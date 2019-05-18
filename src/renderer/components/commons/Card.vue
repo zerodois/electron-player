@@ -9,7 +9,11 @@
       </div>
     </div>
     <div class="card__content">
-      <div class="title" :class="{'ellipsis': ellipsis}">{{ item.snippet.title }}</div>
+      <div class="title" :class="{'ellipsis': ellipsis}">
+        <slot name="title">
+          {{ item.snippet.title }}
+        </slot>
+      </div>
       <small>{{ item.snippet.channelTitle }}</small>
       <slot></slot>
     </div>

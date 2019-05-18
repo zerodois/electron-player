@@ -1,9 +1,8 @@
 <template>
   <section class="search">
-    <grid-component
+    <grid-extended
       v-if="playlists.length"
       title="Playlists"
-      :extended="true"
       :columns="3"
       :list="playlists" />
     <grid-component
@@ -29,12 +28,14 @@ import { mapActions } from 'vuex'
 import { search } from '../../services/youtube'
 import ListComponent from '@/components/commons/List'
 import GridComponent from '@/components/commons/Mosaic'
+import GridExtended from './Search/Mosaic'
 
 export default {
   name: 'Search',
   components: {
     ListComponent,
-    GridComponent
+    GridComponent,
+    GridExtended
   },
   watch: {
     '$route.query.q': 'doSearch'

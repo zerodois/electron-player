@@ -12,7 +12,8 @@
         :ellipsis="ellipsis"
         @play="$emit('play', item)"
         class="grid--item flex flex-column">
-        <slot></slot>
+        <template slot="title"><slot :item="item" name="title"/></template>
+        <slot :item="item"></slot>
       </card>
     </section>
   </div>

@@ -1,6 +1,7 @@
 <template>
 <section>
   <header-list
+    v-if="playlist"
     type="Playlist"
     :item="playlist" />
   <template v-if="playlist">
@@ -40,8 +41,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { playlistItems } from '@/services/youtube'
-import { to } from '@/utils'
+import { playlistItems, playlists } from '@/services/youtube'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import mixin from '@/mixins/download'
@@ -62,6 +62,7 @@ export default {
   data () {
     return {
       loading: true,
+      remote: null,
       fields: [
         {
           title: 'Titulo',
@@ -86,11 +87,17 @@ export default {
         playlistId: this.$route.params.id,
         part: 'snippet,id,contentDetails'
       })
-      let arr = data.items.map(it => {
-        it.id = { videoId: it.contentDetails.videoId, id: it.id }
-        return it
-      })
+      let arr = data
+        .items
+        .filter(it => it.snippet.title !== 'Private video')
+        .map(it => {
+          it.id = { videoId: it.contentDetails.videoId, id: it.id }
+          return it
+        })
       this.updateList({ ...this.playlist, videos: arr })
+      if (this.playlist === this.remote) {
+        this.remote.videos = arr
+      }
       return arr
     },
     sort (column) {
@@ -125,23 +132,33 @@ export default {
       this.updateItem({ item, index, id: this.playlist.id })
     },
     async load () {
-      let param = this.$route.params.id
-      this.setList(this.playlist.videos || [])
-      this.loading = true
-      let [err, data] = await to(this.request())
-      if (param !== this.$route.params.id) {
-        return
-      }
-      this.loading = false
-      if (err) {
+      try {
+        let param = this.$route.params.id
+        if (!this.playlist) {
+          const playlist = await playlists({ id: param })
+          if (!playlist.items.length) throw new Error('Playlist not found!')
+          this.remote = {
+            ...playlist.items[0],
+            videos: []
+          }
+          return this.load()
+        }
+        this.setList(this.playlist.videos || [])
+        this.loading = true
+        let data = await this.request()
+        if (param !== this.$route.params.id) {
+          return
+        }
+        this.loading = false
+        if (this.order) {
+          this.setList(this.doSort(data, this.order, this.playlist.order.asc))
+          return
+        }
+        this.setList(data)
+      } catch (err) {
         console.error(err)
         return this.$snack.danger({ text: 'Erro ao carregar playlist', action: 'Fechar' })
       }
-      if (this.order) {
-        this.setList(this.doSort(data, this.order, this.playlist.order.asc))
-        return
-      }
-      this.setList(data)
     }
   },
   computed: {
@@ -152,7 +169,9 @@ export default {
       list: 'get'
     }),
     playlist () {
-      return this.playlists.find(it => it.id === this.$route.params.id) || {}
+      return this
+        .playlists
+        .find(it => it.id === this.$route.params.id) || this.remote
     },
     order () {
       if (!this.playlist.order) {
