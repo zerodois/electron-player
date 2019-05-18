@@ -8,7 +8,7 @@
     :onPlay="onPlay"
     :extended="true"
   >
-    <h1 slot-scope="{ item }">
+    <h1 class="open-playlist" slot-scope="{ item }">
       <router-link :to="`/playlists/${item.id}`" class="pointer text--primary">
         ABRIR
       </router-link>
@@ -44,4 +44,9 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.grid-mosaic /deep/ .card
+  &:not(:hover) .open-playlist
+    opacity: .35
+.open-playlist
+  transition: opacity .3s ease-in
 </style>

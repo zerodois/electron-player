@@ -4,7 +4,7 @@
       <img
         :src="imageCover('default', item)"
         :alt="`Cover do vídeo ${item.snippet.title}`" />
-      <div class="hover flex-center">
+      <div class="hover flex-center" v-if="!extended">
         <span @click="$emit('play', item)" class="material-icons pointer">play_arrow</span>
       </div>
     </div>
